@@ -1,0 +1,45 @@
+# ── Program-provided materials (not your work) ──────────────────────────────
+# Challenge documents, tutorials, and starter files provided by 10 Academy
+**/*.docx
+**/*.pptx
+**/*.zip
+**/*.pdf
+
+/week*
+
+# ── macOS system files ───────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# ── Compiled reference doc (auto-generated, not a submission artifact) ───────
+ALL_WEEKS_CHALLENGES.md
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# ── Environment and secrets ──────────────────────────────────────────────────
+.env
+.env.*
+*.key
+secrets.json
+
+# ── Jupyter ──────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
