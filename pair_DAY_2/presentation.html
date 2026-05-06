@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 2 — Q3 Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:      #0d1117; --surface: #161b22; --border: #30363d;
+    --text:    #e6edf3; --muted:   #8b949e; --accent:  #3b82f6;
+    --accent2: #f59e0b; --red:     #f85149; --green:   #3fb950;
+    --purple:  #d2a8ff; --code-bg: #161b22;
+  }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; height:100vh; overflow:hidden; user-select:none; }
+
+  .deck { position:relative; width:100vw; height:100vh; }
+  .slide { position:absolute; inset:0; display:flex; flex-direction:column; padding:38px 64px; opacity:0; pointer-events:none; transform:translateX(40px); transition:opacity .32s ease,transform .32s ease; }
+  .slide.active  { opacity:1; pointer-events:all; transform:translateX(0); }
+  .slide.exit    { opacity:0; transform:translateX(-40px); }
+
+  .slide-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--border); margin-bottom:22px; flex-shrink:0; }
+  .slide-label  { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
+  .slide-meta   { font-size:12px; color:var(--muted); }
+
+  .slide-body { flex:1; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+
+  h1  { font-size:38px; font-weight:700; line-height:1.15; letter-spacing:-.02em; }
+  h3  { font-size:11px; font-weight:700; color:var(--accent2); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+  h4  { font-size:15px; font-weight:600; margin-bottom:6px; }
+  p, li { font-size:14px; line-height:1.65; color:var(--text); }
+  .muted { color:var(--muted); font-size:12px; }
+  strong { color:#fff; font-weight:600; }
+  em { color:var(--accent2); font-style:italic; }
+  code { font-family:'JetBrains Mono',monospace; font-size:11.5px; background:var(--surface); padding:1px 5px; border-radius:4px; border:1px solid var(--border); color:#a5d6ff; }
+
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { background:var(--surface); color:var(--muted); font-weight:600; font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:8px 12px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(255,255,255,.02); }
+  .hl td { background:rgba(59,130,246,.07); } .hl td:first-child { border-left:3px solid var(--accent); }
+
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:13px 17px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.65; overflow-x:auto; color:#c9d1d9; flex-shrink:0; }
+  .cm{color:#6e7681} .st{color:#a5d6ff} .fn{color:#d2a8ff} .nu{color:#79c0ff} .kw{color:#ff7b72} .ot{color:#3fb950}
+
+  .callout      { border-left:3px solid var(--accent);  background:rgba(59,130,246,.07);  border-radius:0 6px 6px 0; padding:10px 15px; font-size:13.5px; font-style:italic; color:#c9d1d9; line-height:1.6; }
+  .callout-warn { border-left-color:var(--accent2); background:rgba(245,158,11,.07); }
+  .callout-red  { border-left-color:var(--red);     background:rgba(248,81,73,.07);  font-style:normal; }
+  .callout-green{ border-left-color:var(--green);   background:rgba(63,185,80,.07);  font-style:normal; }
+
+  .stat-row  { display:flex; gap:12px; }
+  .stat-card { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 18px; }
+  .stat-label{ font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+  .stat-value{ font-size:24px; font-weight:700; letter-spacing:-.02em; }
+  .stat-note { font-size:11px; color:var(--muted); margin-top:3px; line-height:1.4; }
+  .card-success{ border-color:rgba(63,185,80,.4);  background:rgba(63,185,80,.06); }
+  .card-danger { border-color:rgba(248,81,73,.4);  background:rgba(248,81,73,.06); }
+  .card-warn   { border-color:rgba(245,158,11,.4); background:rgba(245,158,11,.06); }
+  .card-accent { border-color:rgba(59,130,246,.4); background:rgba(59,130,246,.06); }
+  .card-purple { border-color:rgba(210,168,255,.4); background:rgba(210,168,255,.06); }
+
+  .finding { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .finding-num { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:3px; }
+
+  .concept-row { display:flex; gap:12px; }
+  .concept-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .concept-box .c-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:5px; }
+  .concept-box.vit .c-label  { color:#79c0ff; }
+  .concept-box.tile .c-label { color:#d2a8ff; }
+  .concept-box p, .concept-box li { font-size:13px; line-height:1.55; }
+  .concept-box ul { gap:5px; }
+
+  .diff-row { display:flex; gap:12px; }
+  .diff-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .diff-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:7px; }
+  .diff-box.before .diff-label { color:var(--red); }   .diff-box.before { border-color:rgba(248,81,73,.35); }
+  .diff-box.after  .diff-label { color:var(--green); } .diff-box.after  { border-color:rgba(63,185,80,.35); }
+
+  .two-col { display:flex; gap:14px; }
+  .two-col > * { flex:1; }
+
+  ul { padding-left:17px; display:flex; flex-direction:column; gap:4px; }
+  ul li::marker { color:var(--accent); }
+  .fail { color:var(--red); font-weight:600; }
+
+  .slide-title { justify-content:center; }
+  .slide-title .slide-body { justify-content:center; gap:22px; }
+  .eyebrow { font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
+  .title-sub { font-size:16px; color:var(--muted); line-height:1.55; max-width:640px; }
+  .presenter-row { display:flex; gap:26px; margin-top:6px; }
+  .presenter-item { font-size:13px; color:var(--muted); }
+  .presenter-item strong { color:var(--text); }
+
+  .step-row { display:flex; gap:10px; }
+  .step-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; text-align:center; }
+  .step-num { font-size:22px; font-weight:700; color:var(--accent); }
+  .step-box p { font-size:12px; color:var(--muted); margin-top:4px; line-height:1.45; }
+  .step-box strong { color:var(--text); font-size:13px; }
+  .step-arrow { display:flex; align-items:center; font-size:18px; color:var(--muted); padding-top:4px; }
+
+  .nav { position:fixed; bottom:22px; right:32px; display:flex; align-items:center; gap:10px; z-index:100; }
+  .nav-btn { background:var(--surface); border:1px solid var(--border); color:var(--text); width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; transition:background .15s,border-color .15s; }
+  .nav-btn:hover { background:var(--border); border-color:var(--accent); }
+  .nav-btn:disabled { opacity:.3; cursor:default; }
+  .nav-counter { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
+
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; background:var(--border); z-index:200; }
+  .progress-fill { height:100%; background:var(--accent); transition:width .32s ease; }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-fill" id="progress"></div></div>
+<div class="deck" id="deck">
+
+<!-- ═══ 1. TITLE ═══ -->
+<div class="slide slide-title active" data-slide="0">
+  <div class="slide-header">
+    <span class="slide-label">Day 2 Cohort Presentation — Q3</span>
+    <span class="slide-meta">10 Academy TRP1 · Week 12 · Knowledge Gap Formulation</span>
+  </div>
+  <div class="slide-body">
+    <div class="eyebrow">ViT · Patch Tiling · detail: high · SmartBBoxCropper</div>
+    <h1>The VLM Was Not<br>Looking at My Whole Page</h1>
+    <p class="title-sub">I escalated document images to a vision model and called it Strategy C. I had no idea how the model processed the image, why it failed on wide tables, or what <code>detail: high</code> actually cost.</p>
+    <div class="presenter-row">
+      <div class="presenter-item"><strong>Presenter</strong> · Chalie Lijalem</div>
+      <div class="presenter-item"><strong>Pair</strong> · Gashaw Bekele</div>
+      <div class="presenter-item"><strong>Date</strong> · 2026-05-07</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 2. THE GAP ═══ -->
+<div class="slide" data-slide="1">
+  <div class="slide-header">
+    <span class="slide-label">Slide 1 of 7 — The Gap</span>
+    <span class="slide-meta">Week 3 Document Intelligence Refinery · Strategy C fallback</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>The Artifact</h3>
+      <p style="margin-top:6px;">Week 3 Document Intelligence Refinery — a three-layer extraction pipeline: FastText → Layout Analysis → Vision (Strategy C). When the first two layers fail on complex tables or scanned forms, the pipeline escalates the full page image to a VLM with <code>detail: high</code>.</p>
+    </div>
+    <div>
+      <h3>The Language I Used Without Understanding</h3>
+      <div class="callout callout-red" style="margin-top:7px; font-style:normal;">
+        "escalates to vision model for complex layout"
+      </div>
+      <p style="margin-top:8px; font-size:13px; color:var(--muted);">I wrote this in my pipeline comments as if I understood what the vision model did with the image. I did not.</p>
+    </div>
+    <div>
+      <h3>Three Things I Could Not Do</h3>
+      <div class="stat-row" style="margin-top:7px;">
+        <div class="stat-card card-danger">
+          <div class="stat-label">Predict failure</div>
+          <div class="stat-value" style="font-size:16px;">❌</div>
+          <div class="stat-note">Strategy C succeeds on some tables, fails on others — no pattern I could name</div>
+        </div>
+        <div class="stat-card card-danger">
+          <div class="stat-label">Estimate cost</div>
+          <div class="stat-value" style="font-size:16px;">❌</div>
+          <div class="stat-note">No number for token cost per page — could not set a principled budget cap</div>
+        </div>
+        <div class="stat-card card-danger">
+          <div class="stat-label">Design the escalation</div>
+          <div class="stat-value" style="font-size:16px;">❌</div>
+          <div class="stat-note">Routing had no principle behind it — "try it and see" was the actual logic</div>
+        </div>
+      </div>
+    </div>
+    <div class="callout callout-warn">
+      <strong>The gap:</strong> I had never asked what <code>detail: high</code> actually does to the image, how many tokens it costs, or what architectural property determines whether the VLM can extract a table.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 3. MECHANISM 1 — ViT ═══ -->
+<div class="slide" data-slide="2">
+  <div class="slide-header">
+    <span class="slide-label">Slide 2 of 7 — Mechanism 1: How the VLM Sees an Image</span>
+    <span class="slide-meta">Source: Dosovitskiy et al., An Image is Worth 16×16 Words — ICLR 2021</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>Vision Transformer (ViT) — The Foundation</h3>
+      <div class="step-row" style="margin-top:9px; align-items:flex-start;">
+        <div class="step-box">
+          <div class="step-num">1</div>
+          <strong>Patch Division</strong>
+          <p>Image split into non-overlapping square patches (e.g. 16×16 px each)</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-box">
+          <div class="step-num">2</div>
+          <strong>Flatten + Project</strong>
+          <p>Each patch flattened and projected into the model's embedding dimension</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-box">
+          <div class="step-num">3</div>
+          <strong>Positional Encoding</strong>
+          <p>Learnable positional embeddings added to preserve spatial order within the patch grid</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-box">
+          <div class="step-num">4</div>
+          <strong>Unified Sequence</strong>
+          <p>Patch embeddings + text token embeddings → one sequence, one attention mechanism</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:4px;">
+      <strong>Key insight:</strong> Image patches and text words are the same type of object — vectors in the same embedding space. When the prompt says "extract the revenue column," the word tokens for "revenue" attend directly to the patch embeddings covering that region. There is no separate vision pathway.
+    </div>
+    <div class="concept-row">
+      <div class="concept-box vit">
+        <div class="c-label">Within a tile — spatial layout preserved</div>
+        <p>Positional encodings are learned across the patch grid. The model knows patch (3,2) is to the right of patch (3,1).</p>
+      </div>
+      <div class="concept-box tile" style="border-color:rgba(248,81,73,.35);">
+        <div class="c-label" style="color:var(--red);">Across tiles — NO shared encoding</div>
+        <p>Tiles are independent crops. A patch at position (0,0) of tile 2 has no positional relationship to any patch in tile 1.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 4. MECHANISM 2 — TILING ═══ -->
+<div class="slide" data-slide="3">
+  <div class="slide-header">
+    <span class="slide-label">Slide 3 of 7 — Mechanism 2: What detail: high Actually Does</span>
+    <span class="slide-meta">Source: OpenAI Vision Documentation, 2024</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>The 4-Step Tiling Algorithm</h3>
+      <table style="margin-top:7px;">
+        <thead><tr><th>Step</th><th>Action</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Resize to fit within <strong>2048 × 2048 px</strong></td><td>Preserves aspect ratio</td></tr>
+          <tr><td>2</td><td>Scale so <strong>shortest side = 768 px</strong></td><td>Standardises resolution</td></tr>
+          <tr><td>3</td><td>Tile image in <strong>512 × 512 windows</strong></td><td>Each tile is independent</td></tr>
+          <tr class="hl"><td>4</td><td>Token cost: <strong>85 + (170 × tiles)</strong></td><td>Base overview + per-tile cost</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Concrete Calculation — Scanned A4 at 150 DPI</h3>
+      <pre><span class="kw">import</span> math
+
+<span class="kw">def</span> <span class="fn">vision_tokens_high</span>(w, h):
+    <span class="kw">if</span> max(w,h) > <span class="nu">2048</span>: s = <span class="nu">2048</span>/max(w,h); w,h = int(w*s), int(h*s)
+    <span class="kw">if</span> min(w,h) > <span class="nu">768</span>:  s = <span class="nu">768</span>/min(w,h);  w,h = int(w*s), int(h*s)
+    tiles = math.ceil(w/<span class="nu">512</span>) * math.ceil(h/<span class="nu">512</span>)
+    <span class="kw">return</span> {<span class="st">"dims"</span>:(w,h), <span class="st">"tiles"</span>:tiles, <span class="st">"tokens"</span>:<span class="nu">85</span>+<span class="nu">170</span>*tiles}
+
+<span class="fn">print</span>(vision_tokens_high(<span class="nu">1240</span>, <span class="nu">1754</span>))  <span class="cm"># A4 @ 150 DPI</span>
+<span class="cm"># → {'dims': (768, 1086), 'tiles': 6, 'tokens': 1105}</span>
+<span class="cm"># Cost: 1105 × $0.000000150 = $0.000166 per page</span></pre>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card card-accent">
+        <div class="stat-label">Tokens per A4 page</div>
+        <div class="stat-value">1,105</div>
+        <div class="stat-note">6 tiles × 170 + 85 base</div>
+      </div>
+      <div class="stat-card card-success">
+        <div class="stat-label">Cost per page</div>
+        <div class="stat-value">$0.000166</div>
+        <div class="stat-note">600 pages fits in $0.10</div>
+      </div>
+      <div class="stat-card card-warn">
+        <div class="stat-label">Real constraint</div>
+        <div class="stat-value" style="font-size:17px;">Latency</div>
+        <div class="stat-note">~1–3s per page — not token cost</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 5. WHY TABLES FAIL ═══ -->
+<div class="slide" data-slide="4">
+  <div class="slide-header">
+    <span class="slide-label">Slide 4 of 7 — Why Wide Tables Fail</span>
+    <span class="slide-meta">The failure mode I could not predict — now I can</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>Tile Boundary = Row Continuity Break</h3>
+      <div class="callout callout-red" style="margin-top:7px; font-style:normal; font-size:13.5px;">
+        Each 512 × 512 tile at 150 DPI covers <strong>~3.4 × 3.4 inches</strong> of the original page.<br>
+        An A4-wide table (8.27 inches) spans <strong>2–3 tiles</strong>.<br>
+        Tiles are independent crops — <strong>no shared positional encoding across tile boundaries</strong>.<br>
+        A table row that straddles a boundary appears as two disconnected groups of patches.<br>
+        The model cannot reconstruct row continuity without a structural signal that does not exist.
+      </div>
+    </div>
+    <div class="two-col">
+      <div>
+        <h3 style="margin-bottom:8px;">Tables that succeed</h3>
+        <table>
+          <thead><tr><th>Property</th><th>Why it works</th></tr></thead>
+          <tbody>
+            <tr><td>Width &lt; 3.4 inches</td><td>Fits within one tile — full spatial layout preserved</td></tr>
+            <tr><td>Dense, single-column</td><td>Cells stay within tile boundaries</td></tr>
+            <tr><td>Center of page</td><td>Not split by edge tiling</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3 style="margin-bottom:8px;">Tables that fail</h3>
+        <table>
+          <thead><tr><th>Property</th><th>Why it breaks</th></tr></thead>
+          <tbody>
+            <tr><td class="fail">Width &gt; 3.4 inches</td><td>Row straddles tile boundary — continuity lost</td></tr>
+            <tr><td class="fail">Near page edge</td><td>Content cut by margin tile — partial rows</td></tr>
+            <tr><td class="fail">Multi-column wide</td><td>Columns in different tiles with no linking signal</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="callout callout-green" style="margin-top:4px;">
+      <strong>Now I can predict failure:</strong> if a table's width exceeds one tile width (~3.4 inches at 150 DPI), Strategy C will likely hallucinate or miss rows. This is checkable before the API call.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 6. THE FIX ═══ -->
+<div class="slide" data-slide="5">
+  <div class="slide-header">
+    <span class="slide-label">Slide 5 of 7 — The Fix: SmartBBoxCropper</span>
+    <span class="slide-meta">15-line OpenCV preprocessing — committed to Document Intelligence Refinery</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>The Insight from the Explainer</h3>
+      <p style="margin-top:6px; font-size:13.5px;">If I crop the page to its content bounding box <em>before</em> sending to the VLM, the whitespace margins are removed, the effective image is smaller (fewer tiles), and tables are more likely to fall within a single tile instead of straddling a boundary.</p>
+    </div>
+    <pre style="margin-top:4px;"><span class="kw">import</span> cv2, numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">smart_bbox_crop</span>(img_bytes: bytes, padding: int = <span class="nu">20</span>) -> bytes:
+    nparr  = np.frombuffer(img_bytes, np.uint8)
+    img    = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    gray   = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    _, thr = cv2.threshold(gray, <span class="nu">250</span>, <span class="nu">255</span>, cv2.THRESH_BINARY_INV)
+    coords = cv2.findNonZero(thr)
+    <span class="kw">if</span> coords <span class="kw">is</span> None: <span class="kw">return</span> img_bytes           <span class="cm"># blank page</span>
+    x, y, w, h = cv2.boundingRect(coords)
+    ih, iw = img.shape[:<span class="nu">2</span>]
+    x, y = max(<span class="nu">0</span>, x-padding), max(<span class="nu">0</span>, y-padding)
+    w, h = min(iw-x, w+<span class="nu">2</span>*padding), min(ih-y, h+<span class="nu">2</span>*padding)
+    _, buf = cv2.imencode(<span class="st">'.png'</span>, img[y:y+h, x:x+w])
+    <span class="kw">return</span> buf.tobytes()
+
+<span class="cm"># One line added in _extract_gemini and _extract_ollama:</span>
+img_bytes = <span class="fn">smart_bbox_crop</span>(img_bytes)   <span class="cm"># crop before VLM call</span></pre>
+    <div class="stat-row" style="margin-top:4px;">
+      <div class="stat-card card-success">
+        <div class="stat-label">Token reduction</div>
+        <div class="stat-value">~40–50%</div>
+        <div class="stat-note">Typical A4: 15% margins each side → ~49% area reduction</div>
+      </div>
+      <div class="stat-card card-success">
+        <div class="stat-label">Edge table failures</div>
+        <div class="stat-value">Reduced</div>
+        <div class="stat-note">Tables near page margins now centred in cropped image</div>
+      </div>
+      <div class="stat-card card-accent">
+        <div class="stat-label">Lines of code</div>
+        <div class="stat-value">15</div>
+        <div class="stat-note">One function, two one-line call-sites</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 7. WHAT CHANGED ═══ -->
+<div class="slide" data-slide="6">
+  <div class="slide-header">
+    <span class="slide-label">Slide 6 of 7 — What Changed in My Existing Work</span>
+    <span class="slide-meta">Grounding commit · Document-Intelligence-Refinery · src/strategies/extractors.py</span>
+  </div>
+  <div class="slide-body">
+    <div class="diff-row">
+      <div class="diff-box before">
+        <div class="diff-label">Before — black box, no mechanism</div>
+        <ul style="font-size:12.5px; gap:7px; margin-top:2px;">
+          <li><code>detail: "auto"</code> — non-deterministic token cost across API versions</li>
+          <li>No token cost comment — no number for budget estimation</li>
+          <li>Full raw page sent to VLM regardless of whitespace</li>
+          <li>No explanation of why wide tables fail — labelled as "VLM limitation"</li>
+          <li>Escalation trigger: "did upstream layers fail?" — no predictive signal</li>
+        </ul>
+      </div>
+      <div class="diff-box after">
+        <div class="diff-label">After — mechanism documented, fix applied</div>
+        <ul style="font-size:12.5px; gap:7px; margin-top:2px;">
+          <li><code>detail: "high"</code> explicit — reproducible cost across API versions</li>
+          <li>Token cost comment: 6 tiles × 170 + 85 = <strong>1,105 tokens = $0.000166/page</strong></li>
+          <li><code>smart_bbox_crop()</code> runs before every VLM call — ~40–50% token reduction</li>
+          <li>Tile-boundary failure documented: tables &gt;~3.4 inches wide predicted to fail</li>
+          <li>Two-pass strategy flagged as TODO: <code>detail: low</code> for classification first</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-warn" style="margin-top:6px;">
+      <strong>The routing logic has a principle now.</strong> Before: "try it and see." After: check table width against tile coverage before escalating, and send a cropped image when you do.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 8. SUMMARY ═══ -->
+<div class="slide" data-slide="7">
+  <div class="slide-header">
+    <span class="slide-label">Slide 7 of 7 — Summary</span>
+    <span class="slide-meta">Gashaw Bekele's explainer closed the gap · Sign-off: Closed</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>What I Understand Now That I Did Not Before</h3>
+      <table style="margin-top:8px;">
+        <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+        <tbody>
+          <tr><td>What does <code>detail: high</code> do?</td><td>4-step resize + tile into 512×512 windows → 85 + 170×tiles tokens</td></tr>
+          <tr><td>Cost per A4 page?</td><td><strong>1,105 tokens · $0.000166</strong> · latency is the real constraint</td></tr>
+          <tr><td>How does the VLM encode the image?</td><td>ViT: patches → same embedding space as text → unified attention</td></tr>
+          <tr><td>Why do wide tables fail?</td><td>Tile boundaries cut rows; no positional encoding bridges tiles</td></tr>
+          <tr class="hl"><td>How to predict failure?</td><td>Table width &gt; ~3.4 inches at 150 DPI → will straddle tile boundary</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="margin-top:8px; font-size:14.5px; line-height:1.7; font-style:normal;">
+      I wrote "escalates to vision model for complex layout" — but the model never saw the whole page. It saw six independent 512×512 tile crops with no structural signal connecting them. A 15-line OpenCV crop fixes half the failures and costs nothing.
+    </div>
+    <div>
+      <h3 style="margin-top:6px;">Canonical Sources</h3>
+      <p style="font-size:12.5px; color:var(--muted); margin-top:4px;">
+        Dosovitskiy et al., <em>An Image is Worth 16×16 Words</em>, ICLR 2021 ·
+        OpenAI Vision Documentation (detail parameter + token formula), 2024 ·
+        GPT-4V System Card, OpenAI, 2023
+      </p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<nav class="nav">
+  <button class="nav-btn" id="prev" onclick="go(-1)" disabled>&#8592;</button>
+  <span class="nav-counter" id="counter">1 / 8</span>
+  <button class="nav-btn" id="next" onclick="go(1)">&#8594;</button>
+</nav>
+
+<script>
+  const slides   = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  const counter  = document.getElementById('counter');
+  const prevBtn  = document.getElementById('prev');
+  const nextBtn  = document.getElementById('next');
+  let current = 0;
+
+  function update() {
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    counter.textContent  = (current + 1) + ' / ' + slides.length;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+  }
+
+  function go(dir) {
+    const next = current + dir;
+    if (next < 0 || next >= slides.length) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    const prev = current;
+    current = next;
+    setTimeout(() => slides[prev].classList.remove('exit'), 360);
+    slides[current].classList.add('active');
+    update();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(1);
+    if (e.key==='ArrowLeft' ||e.key==='ArrowUp')                 go(-1);
+  });
+
+  update();
+</script>
+</body>
+</html>
