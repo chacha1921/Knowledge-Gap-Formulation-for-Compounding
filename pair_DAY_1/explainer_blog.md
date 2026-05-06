@@ -3,7 +3,7 @@
 **Question answered (Addisu Taye):**
 > How is the total latency and cost of a single LLM inference call split between the prefill and decode phases, and how would changes in prompt length vs output length quantitatively shift both cost and p95 latency?
 
-**Published URL:** https://chalielijalem.substack.com/p/the-two-phases-inside-every-llm-call
+**Published URL:** https://medium.com/@chalielijalem/the-two-phases-inside-every-llm-call-prefill-decode-and-why-the-split-changes-everything-d35946f5aa4f
 
 ---
 
