@@ -55,8 +55,8 @@ portfolio_update.md  ← How the 5 grounding commits improve Week 10/11 work
 
 | Day | Blog Post | Tweet Thread |
 |-----|-----------|--------------|
-| 1 | [The Two Phases Inside Every LLM Call](https://chalielijalem.substack.com/p/the-two-phases-inside-every-llm-call) | [Tweet Thread](https://x.com/ChalieLijalem/status/2051408252194193704?s=20) |
-| 2 | | |
+| 1 | [The Two Phases Inside Every LLM Call](https://medium.com/@chalielijalem/the-two-phases-inside-every-llm-call-prefill-decode-and-why-the-split-changes-everything-d35946f5aa4f) | [Tweet Thread](https://x.com/ChalieLijalem/status/2051408252194193704?s=20) |
+| 2 | [How Tool Selection Actually Works in Function-Calling Agents](https://medium.com/@chalielijalem/how-tool-selection-actually-works-in-function-calling-agents-1961c1d3d222) | [Tweet Thread](https://x.com/ChalieLijalem/status/2052091935687393364?s=20) |
 | 3 | | |
 | 4 | | |
 | 5 | | |
