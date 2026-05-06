@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 1 — Q5 Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:      #0d1117; --surface: #161b22; --border: #30363d;
+    --text:    #e6edf3; --muted:   #8b949e; --accent:  #3b82f6;
+    --accent2: #f59e0b; --red:     #f85149; --green:   #3fb950;
+    --purple:  #d2a8ff; --code-bg: #161b22;
+  }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; height:100vh; overflow:hidden; user-select:none; }
+
+  .deck { position:relative; width:100vw; height:100vh; }
+  .slide { position:absolute; inset:0; display:flex; flex-direction:column; padding:38px 64px; opacity:0; pointer-events:none; transform:translateX(40px); transition:opacity .32s ease,transform .32s ease; }
+  .slide.active  { opacity:1; pointer-events:all; transform:translateX(0); }
+  .slide.exit    { opacity:0; transform:translateX(-40px); }
+
+  .slide-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--border); margin-bottom:22px; flex-shrink:0; }
+  .slide-label  { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
+  .slide-meta   { font-size:12px; color:var(--muted); }
+
+  .slide-body { flex:1; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+
+  h1  { font-size:38px; font-weight:700; line-height:1.15; letter-spacing:-.02em; }
+  h3  { font-size:11px; font-weight:700; color:var(--accent2); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+  h4  { font-size:15px; font-weight:600; margin-bottom:6px; }
+  p, li { font-size:14px; line-height:1.65; color:var(--text); }
+  .muted { color:var(--muted); font-size:12px; }
+  strong { color:#fff; font-weight:600; }
+  em { color:var(--accent2); font-style:italic; }
+  code { font-family:'JetBrains Mono',monospace; font-size:11.5px; background:var(--surface); padding:1px 5px; border-radius:4px; border:1px solid var(--border); color:#a5d6ff; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { background:var(--surface); color:var(--muted); font-weight:600; font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:8px 12px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(255,255,255,.02); }
+  .hl td { background:rgba(59,130,246,.07); } .hl td:first-child { border-left:3px solid var(--accent); }
+
+  /* code blocks */
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:13px 17px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.65; overflow-x:auto; color:#c9d1d9; flex-shrink:0; }
+  .cm{color:#6e7681} .st{color:#a5d6ff} .fn{color:#d2a8ff} .nu{color:#79c0ff} .kw{color:#ff7b72} .ot{color:#3fb950}
+
+  /* callouts */
+  .callout      { border-left:3px solid var(--accent);  background:rgba(59,130,246,.07);  border-radius:0 6px 6px 0; padding:10px 15px; font-size:13.5px; font-style:italic; color:#c9d1d9; line-height:1.6; }
+  .callout-warn { border-left-color:var(--accent2); background:rgba(245,158,11,.07); }
+  .callout-red  { border-left-color:var(--red);     background:rgba(248,81,73,.07);  font-style:normal; }
+  .callout-green{ border-left-color:var(--green);   background:rgba(63,185,80,.07);  font-style:normal; }
+
+  /* stat cards */
+  .stat-row  { display:flex; gap:12px; }
+  .stat-card { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 18px; }
+  .stat-label{ font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+  .stat-value{ font-size:24px; font-weight:700; letter-spacing:-.02em; }
+  .stat-note { font-size:11px; color:var(--muted); margin-top:3px; line-height:1.4; }
+  .card-success{ border-color:rgba(63,185,80,.4);  background:rgba(63,185,80,.06);  }
+  .card-danger { border-color:rgba(248,81,73,.4);  background:rgba(248,81,73,.06);  }
+  .card-warn   { border-color:rgba(245,158,11,.4); background:rgba(245,158,11,.06); }
+  .card-accent { border-color:rgba(59,130,246,.4); background:rgba(59,130,246,.06); }
+  .card-purple { border-color:rgba(210,168,255,.4); background:rgba(210,168,255,.06); }
+
+  /* finding blocks */
+  .finding { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .finding-num { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:3px; }
+
+  /* concept boxes */
+  .concept-row { display:flex; gap:12px; }
+  .concept-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .concept-box .c-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:5px; }
+  .concept-box.prefill .c-label { color:#79c0ff; }
+  .concept-box.decode  .c-label { color:#d2a8ff; }
+  .concept-box p, .concept-box li { font-size:13px; line-height:1.55; }
+  .concept-box ul { gap:5px; }
+
+  /* diff */
+  .diff-row { display:flex; gap:12px; }
+  .diff-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .diff-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:7px; }
+  .diff-box.before .diff-label { color:var(--red); }   .diff-box.before { border-color:rgba(248,81,73,.35); }
+  .diff-box.after  .diff-label { color:var(--green); } .diff-box.after  { border-color:rgba(63,185,80,.35); }
+
+  /* why items */
+  .why-row { display:flex; gap:12px; }
+  .why-item { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .why-num  { font-size:26px; font-weight:700; color:var(--accent); margin-bottom:4px; }
+  .why-item p { font-size:13px; line-height:1.55; }
+
+  /* prob items */
+  .prob-row { display:flex; gap:12px; }
+  .prob-item { flex:1; background:var(--surface); border:1px solid rgba(248,81,73,.35); border-radius:10px; padding:13px 17px; }
+  .prob-item .prob-icon { font-size:20px; margin-bottom:5px; }
+  .prob-item h4 { font-size:13px; font-weight:600; color:var(--red); margin-bottom:4px; }
+  .prob-item p  { font-size:12px; line-height:1.5; color:var(--muted); }
+
+  /* fix items */
+  .fix-item { background:var(--surface); border:1px solid rgba(63,185,80,.3); border-radius:10px; padding:12px 16px; }
+  .fix-item .fix-tag { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green); margin-bottom:4px; }
+  .fix-item h4  { font-size:14px; font-weight:600; margin-bottom:6px; }
+  .fix-item p, .fix-item li { font-size:12.5px; line-height:1.55; }
+
+  /* two col */
+  .two-col { display:flex; gap:14px; }
+  .two-col > * { flex:1; }
+
+  ul { padding-left:17px; display:flex; flex-direction:column; gap:4px; }
+  ul li::marker { color:var(--accent); }
+  .cond-fail { color:var(--red); font-weight:600; }
+
+  /* title slide */
+  .slide-title { justify-content:center; }
+  .slide-title .slide-body { justify-content:center; gap:22px; }
+  .eyebrow { font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
+  .title-sub { font-size:16px; color:var(--muted); line-height:1.55; max-width:600px; }
+  .presenter-row { display:flex; gap:26px; margin-top:6px; }
+  .presenter-item { font-size:13px; color:var(--muted); }
+  .presenter-item strong { color:var(--text); }
+
+  /* nav */
+  .nav { position:fixed; bottom:22px; right:32px; display:flex; align-items:center; gap:10px; z-index:100; }
+  .nav-btn { background:var(--surface); border:1px solid var(--border); color:var(--text); width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; transition:background .15s,border-color .15s; }
+  .nav-btn:hover { background:var(--border); border-color:var(--accent); }
+  .nav-btn:disabled { opacity:.3; cursor:default; }
+  .nav-counter { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
+
+  /* progress */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; background:var(--border); z-index:200; }
+  .progress-fill { height:100%; background:var(--accent); transition:width .32s ease; }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-fill" id="progress"></div></div>
+<div class="deck" id="deck">
+
+<!-- ═══ 1. TITLE ═══ -->
+<div class="slide slide-title active" data-slide="0">
+  <div class="slide-header">
+    <span class="slide-label">Day 1 Cohort Presentation — Q5</span>
+    <span class="slide-meta">10 Academy TRP1 · Week 12 · Knowledge Gap Formulation</span>
+  </div>
+  <div class="slide-body">
+    <div class="eyebrow">KV Cache · Prefix Caching · API Boundary</div>
+    <h1>The System Prompt<br>Was Never Reused</h1>
+    <p class="title-sub">I claimed the KV cache would handle repeated prefixes across turns. I had never verified this. A 14.7× cost spread in my own traces revealed the gap.</p>
+    <div class="presenter-row">
+      <div class="presenter-item"><strong>Presenter</strong> · Chalie Lijalem</div>
+      <div class="presenter-item"><strong>Pair</strong> · Addisu Taye</div>
+      <div class="presenter-item"><strong>Date</strong> · 2026-05-06</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 2. MY QUESTION & WHY ═══ -->
+<div class="slide" data-slide="1">
+  <div class="slide-header">
+    <span class="slide-label">Slide 1 of 8 — My Question &amp; Why I Raised It</span>
+    <span class="slide-meta">Week 10 Conversion Engine · Tenacious Intelligence Corp</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>The Question I Submitted</h3>
+      <div class="callout" style="margin-top:7px; font-size:13px; font-style:normal; line-height:1.7;">
+        In my Week 10 Conversion Engine, the agent re-sends the same system prompt on every turn. My baseline.md shows avg_agent_cost: $0.0199 but task_4 costs $0.0963. I said it is reused, but I have never verified whether the API is actually caching that repeated prefix or charging me full prefill cost every time. How does KV cache work at the API call boundary — what conditions must be met for prefix caching to apply, and how does cache invalidation happen when the conversation context changes between turns?
+      </div>
+    </div>
+    <div>
+      <h3>Why I Raised It — 3 Reasons</h3>
+      <div class="why-row" style="margin-top:7px;">
+        <div class="why-item">
+          <div class="why-num">1</div>
+          <p><strong>My traces had a 14.7× cost gap.</strong> task_4 cost $0.0963 and task_73 cost $0.0077. Same model. Same agent. Same reward. I had no mechanism to explain why.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-num">2</div>
+          <p><strong>I made a claim I never verified.</strong> My <code>baseline.md</code> said "the system prompt is reused across turns." I assumed the KV cache handled it automatically — I never confirmed this.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-num">3</div>
+          <p><strong>It is an FDE-critical problem.</strong> Every multi-turn sales agent I build for Tenacious clients will have this issue. Understanding the mechanism changes how I design, cost-estimate, and debug it.</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout callout-warn">
+      <strong>The gap:</strong> I reported <code>avg_agent_cost: $0.0199</code> as if it were a clean number. Without understanding the KV cache boundary, I could not explain the variance, predict costs, or know what to optimize.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 3. ANOMALY ═══ -->
+<div class="slide" data-slide="2">
+  <div class="slide-header">
+    <span class="slide-label">Slide 2 of 8 — The Anomaly in My Own Data</span>
+    <span class="slide-meta">trace_log.jsonl · 150 traces · 30 tasks × 5 trials</span>
+  </div>
+  <div class="slide-body">
+    <div class="stat-row">
+      <div class="stat-card card-success">
+        <div class="stat-label">task_73 (short)</div>
+        <div class="stat-value">$0.0077</div>
+        <div class="stat-note">43s · same model · same reward outcome</div>
+      </div>
+      <div class="stat-card card-danger">
+        <div class="stat-label">task_4 (long)</div>
+        <div class="stat-value">$0.0963</div>
+        <div class="stat-note">683s · same model · same reward outcome</div>
+      </div>
+      <div class="stat-card card-warn">
+        <div class="stat-label">Cost ratio</div>
+        <div class="stat-value">14.7×</div>
+        <div class="stat-note">Reported in baseline as avg_agent_cost: $0.0199</div>
+      </div>
+    </div>
+    <div>
+      <h3>Same task, 5 trials — cost variance</h3>
+      <table style="margin-top:7px;">
+        <thead><tr><th>Task</th><th>Min cost</th><th>Max cost</th><th>Ratio</th></tr></thead>
+        <tbody>
+          <tr><td>task_4</td><td>$0.0229</td><td>$0.0963</td><td class="cond-fail">4.2×</td></tr>
+          <tr><td>task_11</td><td>$0.0082</td><td>$0.0192</td><td class="cond-fail">2.3×</td></tr>
+          <tr><td>task_83</td><td>$0.0089</td><td>$0.0186</td><td class="cond-fail">2.1×</td></tr>
+          <tr class="hl"><td>task_105</td><td>$0.0140</td><td>$0.0998</td><td class="cond-fail">7.1×</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-red">
+      <strong>Cost-duration decoupling:</strong> task_92 spent <strong>687 seconds</strong> at only <strong>$0.0124</strong>. The agent was waiting for the environment — not generating tokens. p95 latency (551s) conflates inference time with environment wait time.
+    </div>
+    <div class="callout callout-warn">
+      <strong>The claim I made but never verified:</strong> "The system prompt is reused across turns." Written in baseline.md. Never checked.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 4. KV CACHE CONCEPTS ═══ -->
+<div class="slide" data-slide="3">
+  <div class="slide-header">
+    <span class="slide-label">Slide 3 of 8 — KV Cache: What It Is &amp; How It Works</span>
+    <span class="slide-meta">Source: Kwon et al., PagedAttention — SOSP 2023</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>What is KV Cache?</h3>
+      <div class="callout" style="margin-top:7px; font-size:13px; font-style:normal; line-height:1.7;">
+        When a transformer processes tokens, each token generates a <strong>Key (K)</strong> and a <strong>Value (V)</strong> across every attention layer. These are stored in GPU memory so the model can attend to prior tokens without recomputing them. The stored collection of all K and V vectors is called the <strong>KV cache</strong>.
+      </div>
+    </div>
+    <div>
+      <h3>The Two Inference Phases</h3>
+      <div class="concept-row" style="margin-top:7px;">
+        <div class="concept-box prefill">
+          <div class="c-label">Phase 1 — Prefill</div>
+          <h4>Building the cache</h4>
+          <ul>
+            <li>All input tokens processed <strong>in parallel</strong> — one forward pass</li>
+            <li>KV cache built and stored in GPU memory</li>
+            <li>Output: not a word — it is the KV cache itself</li>
+            <!-- <li>Bottleneck: <strong>compute-bound</strong> (FLOPS)</li>
+            <li>Latency metric: <strong>Time to First Token (TTFT)</strong></li> -->
+          </ul>
+        </div>
+        <div class="concept-box decode">
+          <div class="c-label">Phase 2 — Decode</div>
+          <h4>Reading the cache</h4>
+          <ul>
+            <li>Tokens generated <strong>one at a time</strong> — cannot parallelize</li>
+            <li>Each step reads the full KV cache from GPU memory</li>
+            <li>Token 5 cannot start until tokens 1–4 are done</li>
+            <!-- <li>Bottleneck: <strong>memory-bandwidth-bound</strong> (GB/s)</li>
+            <li>Latency metric: <strong>TPOT × output token count</strong></li> -->
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card card-accent">
+        <div class="stat-label">Within a single API call</div>
+        <div class="stat-value" style="font-size:17px; color:var(--green);">KV cache IS reused</div>
+        <div class="stat-note">Decode reads the cache prefill built — no recomputation within one call</div>
+      </div>
+      <div class="stat-card card-danger">
+        <div class="stat-label">Across separate API calls</div>
+        <div class="stat-value" style="font-size:17px; color:var(--red);">KV cache is DISCARDED</div>
+        <div class="stat-note">Every new turn = new request = full prefill recomputed from scratch</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 5. FINDINGS 1 & 2 + SOURCES ═══ -->
+<div class="slide" data-slide="4">
+  <div class="slide-header">
+    <span class="slide-label">Slide 4 of 8 — What the Explainer Revealed</span>
+    <span class="slide-meta">Partner: Addisu Taye</span>
+  </div>
+  <div class="slide-body">
+    <div class="finding">
+      <div class="finding-num">Finding 1</div>
+      <h4>KV cache is NOT preserved across API calls</h4>
+      <p>Every turn is a separate API request. My Conversion Engine re-pays full prefill cost on the full accumulated context — system prompt + all prior turns — every single turn.</p>
+      <div class="callout" style="margin-top:9px; font-size:13px;">
+        <em>"Logically reused — computationally recomputed every time."</em>
+        <span style="color:var(--muted); font-style:normal;"> — Addisu's explainer</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-num">Finding 2</div>
+      <h4>Cost growth is O(n²) in turns</h4>
+      <div class="two-col" style="margin-top:8px;">
+        <pre><span class="cm">Turn 1:</span>  S + U1
+<span class="cm">Turn 2:</span>  S + U1 + A1 + U2
+<span class="cm">Turn 3:</span>  S + U1 + A1 + U2 + A2 + U3
+<span class="cm">         ↑ full history re-paid every turn</span></pre>
+        <table>
+          <thead><tr><th></th><th>task_73</th><th>task_4</th></tr></thead>
+          <tbody>
+            <tr><td>Cost</td><td>$0.0077</td><td class="cond-fail">$0.0963</td></tr>
+            <tr><td>Duration</td><td>43s</td><td class="cond-fail">683s</td></tr>
+            <tr class="hl"><td><strong>Why</strong></td><td colspan="2"><strong>More turns — not a harder task</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h3>Canonical Sources (Addisu's Explainer)</h3>
+      <table style="margin-top:7px;">
+        <thead><tr><th>Source</th><th>What it answered</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Kwon et al., PagedAttention</strong> — SOSP 2023</td><td>KV cache lifecycle — created in prefill, reused in decode, discarded after each API call</td></tr>
+          <tr><td><strong>Anthropic, Prompt Caching Docs</strong></td><td>Prefix caching conditions; why multi-turn agents cannot rely on it reliably</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 6. EXPERIMENT (OpenRouter) ═══ -->
+<div class="slide" data-slide="5">
+  <div class="slide-header">
+    <span class="slide-label">Slide 5 of 8 — Hands-on Verification</span>
+    <span class="slide-meta">Addisu verified the findings using OpenRouter API</span>
+  </div>
+  <div class="slide-body">
+    <div>
+      <h3>Experiment Code — OpenRouter</h3>
+      <pre style="margin-top:7px;"><span class="kw">import</span> time
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI   <span class="cm"># OpenRouter uses the OpenAI-compatible interface</span>
+
+client = OpenAI(
+    base_url=<span class="st">"https://openrouter.ai/api/v1"</span>,
+    api_key=<span class="st">"YOUR_OPENROUTER_API_KEY"</span>,
+)
+
+prompt = <span class="st">"You are a helpful assistant. Explain KV cache in one sentence."</span>
+start  = time.time()
+
+response = client.chat.completions.create(
+    model=<span class="st">"anthropic/claude-haiku-4-5"</span>,   <span class="cm"># any model available on OpenRouter</span>
+    messages=[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}],
+)
+
+<span class="fn">print</span>(<span class="st">"Prompt tokens:"</span>,     response.usage.prompt_tokens)       <span class="cm"># → 18</span>
+<span class="fn">print</span>(<span class="st">"Completion tokens:"</span>, response.usage.completion_tokens)    <span class="cm"># → 22</span>
+<span class="fn">print</span>(<span class="st">"Total latency:"</span>,     round(time.time() - start, <span class="nu">3</span>), <span class="st">"s"</span>)  <span class="cm"># → 0.82s</span></pre>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card card-danger">
+        <div class="stat-label">Same prompt · run twice</div>
+        <div class="stat-value" style="font-size:16px;">No caching observed</div>
+        <div class="stat-note">Nearly identical latency both times — prefix cache not triggered</div>
+      </div>
+      <div class="stat-card card-warn">
+        <div class="stat-label">As prompt grew across turns</div>
+        <div class="stat-value" style="font-size:16px;">Tokens ↑ · Latency ↑</div>
+        <div class="stat-note">prompt_tokens and latency grew proportionally — prefill recomputed every time</div>
+      </div>
+      <div class="stat-card card-accent">
+        <div class="stat-label">Also on trace_log.jsonl</div>
+        <div class="stat-value" style="font-size:16px;">4.2×–7.1× variance</div>
+        <div class="stat-note">Same-task cost variance confirmed from turn count, not task difficulty</div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Empirical confirmation:</strong> The theory matched the measured data. The cost spikes are not anomalies — they are the predictable result of context accumulation without persistent KV cache across API calls.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 7. PROBLEMS CREATED ═══ -->
+<div class="slide" data-slide="6">
+  <div class="slide-header">
+    <span class="slide-label">Slide 6 of 8 — Problems This Gap Created in My Week 10 Work</span>
+    <span class="slide-meta">Conversion Engine · Tenacious ICP + bench summary + hiring signal brief re-sent every turn</span>
+  </div>
+  <div class="slide-body">
+    <div class="prob-row">
+      <div class="prob-item">
+        <div class="prob-icon">⚠</div>
+        <h4>No turn budget enforced</h4>
+        <p>Without knowing cost is O(n²), I set no <code>max_turns</code> guard. task_4 ran uncapped turns and cost 14.7× more than task_73 — both received the same reward.</p>
+      </div>
+      <div class="prob-item">
+        <div class="prob-icon">⚠</div>
+        <h4>Prefix caching never applied</h4>
+        <p>The Conversion Engine prepends a dynamic hiring signal brief (different per company) before the static system prompt — this means the byte-identical prefix requirement is never met. Every turn pays full prefill on the entire context.</p>
+      </div>
+      <div class="prob-item">
+        <div class="prob-icon">⚠</div>
+        <h4>Client cost estimate is wrong</h4>
+        <p>Quoting "$0.0199 per conversation" to Tenacious would be incorrect. The actual range is <strong>$0.0068–$0.0998</strong>. High-turn edge cases cost 5× the quoted average.</p>
+      </div>
+    </div>
+    <div class="prob-row">
+      <div class="prob-item">
+        <div class="prob-icon">⚠</div>
+        <h4>p95 latency SLA is unmeasurable</h4>
+        <p>p95 = 551s is reported as if it reflects inference time. It doesn't — task_92 (687s, $0.0124) proves the agent was waiting, not generating. Inference latency and environment wait are mixed and cannot be optimized separately.</p>
+      </div>
+      <div class="prob-item">
+        <div class="prob-icon">⚠</div>
+        <h4>Context window risk unmonitored</h4>
+        <p>As turns accumulate, the growing context approaches the model's context limit. Without a turn or token budget, a long-running task could hit the limit mid-conversation and fail silently.</p>
+      </div>
+      <div class="prob-item">
+        <div class="prob-icon">⚠</div>
+        <h4>No cost cap per task</h4>
+        <p>Nothing in the Conversion Engine stops a single task from consuming $0.10+. Without a hard <code>max_cost</code> guard, unpredictable tasks can blow the per-run budget without warning.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 8. LOCAL CACHING ═══ -->
+<div class="slide" data-slide="7">
+  <div class="slide-header">
+    <span class="slide-label">Slide 7 of 8 — Local Caching: What Can Be Done</span>
+    <span class="slide-meta">Three concrete fixes for the Conversion Engine</span>
+  </div>
+  <div class="slide-body">
+    <div class="fix-item">
+      <div class="fix-tag">Fix 1 — Anthropic Prompt Caching (cache_control)</div>
+      <h4>Pin the static system prompt as a cached prefix</h4>
+      <pre><span class="cm"># Restructure the prompt: static content first, dynamic last</span>
+response = anthropic.messages.create(
+    model=<span class="st">"claude-sonnet-4-6"</span>,
+    system=[
+        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: STATIC_SYSTEM_PROMPT,
+         <span class="st">"cache_control"</span>: {<span class="st">"type"</span>: <span class="st">"ephemeral"</span>}},  <span class="cm"># ← cached prefix</span>
+        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: dynamic_hiring_brief}    <span class="cm"># ← not cached, changes per company</span>
+    ],
+    messages=conversation_history
+)</pre>
+      <p class="muted" style="margin-top:5px;">Requirement: static content must be ≥1,024 tokens and appear before all dynamic content from position 0.</p>
+    </div>
+    <div class="two-col">
+      <div class="fix-item">
+        <div class="fix-tag">Fix 2 — Turn Budget + Context Pruning</div>
+        <h4>Cap O(n²) growth at the source</h4>
+        <pre><span class="cm"># Hard cap on turns</span>
+MAX_TURNS = <span class="nu">5</span>
+<span class="kw">if</span> turn_count >= MAX_TURNS:
+    <span class="kw">raise</span> TurnBudgetExceeded
+
+<span class="cm"># Keep only the last N turns to prune context</span>
+MAX_HISTORY = <span class="nu">6</span>  <span class="cm"># 3 turns × 2 messages</span>
+messages = messages[-MAX_HISTORY:]</pre>
+      </div>
+      <div class="fix-item">
+        <div class="fix-tag">Fix 3 — Cost Guard Per Task</div>
+        <h4>Hard stop before context explodes</h4>
+        <pre><span class="cm"># Track cumulative cost per task run</span>
+MAX_COST_PER_TASK = <span class="nu">0.05</span>  <span class="cm"># $0.05 hard cap</span>
+cumulative_cost += (
+    prompt_tokens * <span class="nu">3.00</span> / <span class="nu">1_000_000</span> +
+    output_tokens * <span class="nu">15.00</span> / <span class="nu">1_000_000</span>
+)
+<span class="kw">if</span> cumulative_cost > MAX_COST_PER_TASK:
+    <span class="kw">raise</span> CostBudgetExceeded</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 9. WHAT CHANGED ═══ -->
+<div class="slide" data-slide="8">
+  <div class="slide-header">
+    <span class="slide-label">Slide 8 of 8 — What Changed in My Existing Work</span>
+    <span class="slide-meta">Grounding commit · week10/Technical Challenge/baseline.md</span>
+  </div>
+  <div class="slide-body">
+    <div class="diff-row">
+      <div class="diff-box before">
+        <div class="diff-label">Before — one number, no mechanism</div>
+        <pre style="background:transparent; border:none; padding:3px 0; font-size:12px;">avg_agent_cost:  $0.0199
+p95_latency:     551.65s</pre>
+        <p class="muted" style="margin-top:7px; font-size:12px;">Reported as if these were simple summaries. No explanation of variance. Not defensible to a technical reviewer or client.</p>
+      </div>
+      <div class="diff-box after">
+        <div class="diff-label">After — Added "Cost Interpretation" section</div>
+        <ul style="font-size:12.5px; gap:7px; margin-top:2px;">
+          <li>14.7× cost spread explained as O(n²) context growth — <strong>not task difficulty</strong></li>
+          <li>KV cache not preserved across API calls — system prompt re-prefilled every turn</li>
+          <li>p95 (551s) conflates inference time with environment wait — task_92: 687s at $0.0124</li>
+          <li>Prefix caching conditions and why they give diminishing returns as turns grow</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-warn">
+      <strong>The baseline.md is now defensible</strong> — it documents the mechanism behind the distribution, not just the average.
+    </div>
+    <!-- <div style="border-top:1px solid var(--border); padding-top:14px;">
+      <h3>One-sentence summary</h3>
+      <div class="callout" style="margin-top:8px; font-size:14.5px; line-height:1.7; font-style:normal;">
+        I wrote "the system prompt is reused across turns" — but every API call rebuilds the KV cache from scratch, context grows O(n²), and the 14.7× cost spread in my traces is explained entirely by <strong>turn count</strong>, not task difficulty.
+      </div>
+    </div> -->
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<nav class="nav">
+  <button class="nav-btn" id="prev" onclick="go(-1)" disabled>&#8592;</button>
+  <span class="nav-counter" id="counter">1 / 9</span>
+  <button class="nav-btn" id="next" onclick="go(1)">&#8594;</button>
+</nav>
+
+<script>
+  const slides   = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  const counter  = document.getElementById('counter');
+  const prevBtn  = document.getElementById('prev');
+  const nextBtn  = document.getElementById('next');
+  let current = 0;
+
+  function update() {
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    counter.textContent  = (current + 1) + ' / ' + slides.length;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+  }
+
+  function go(dir) {
+    const next = current + dir;
+    if (next < 0 || next >= slides.length) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    const prev = current;
+    current = next;
+    setTimeout(() => slides[prev].classList.remove('exit'), 360);
+    slides[current].classList.add('active');
+    update();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(1);
+    if (e.key==='ArrowLeft' ||e.key==='ArrowUp')                  go(-1);
+  });
+
+  update();
+</script>
+</body>
+</html>
