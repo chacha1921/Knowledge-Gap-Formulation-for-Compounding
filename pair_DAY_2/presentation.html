@@ -8,99 +8,110 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg:      #0d1117; --surface: #161b22; --border: #30363d;
-    --text:    #e6edf3; --muted:   #8b949e; --accent:  #3b82f6;
-    --accent2: #f59e0b; --red:     #f85149; --green:   #3fb950;
-    --purple:  #d2a8ff; --code-bg: #161b22;
+    --bg:#0d1117; --surface:#161b22; --border:#30363d;
+    --text:#e6edf3; --muted:#8b949e; --accent:#3b82f6;
+    --accent2:#f59e0b; --red:#f85149; --green:#3fb950;
+    --purple:#d2a8ff; --code-bg:#161b22;
   }
   body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; height:100vh; overflow:hidden; user-select:none; }
 
   .deck { position:relative; width:100vw; height:100vh; }
-  .slide { position:absolute; inset:0; display:flex; flex-direction:column; padding:38px 64px; opacity:0; pointer-events:none; transform:translateX(40px); transition:opacity .32s ease,transform .32s ease; }
+  .slide { position:absolute; inset:0; display:flex; flex-direction:column; padding:34px 60px; opacity:0; pointer-events:none; transform:translateX(40px); transition:opacity .32s ease,transform .32s ease; }
   .slide.active  { opacity:1; pointer-events:all; transform:translateX(0); }
   .slide.exit    { opacity:0; transform:translateX(-40px); }
 
-  .slide-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--border); margin-bottom:22px; flex-shrink:0; }
+  .slide-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--border); margin-bottom:18px; flex-shrink:0; }
   .slide-label  { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
   .slide-meta   { font-size:12px; color:var(--muted); }
 
-  .slide-body { flex:1; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+  .slide-body { flex:1; display:flex; flex-direction:column; gap:13px; overflow:hidden; }
 
-  h1  { font-size:38px; font-weight:700; line-height:1.15; letter-spacing:-.02em; }
+  h1  { font-size:36px; font-weight:700; line-height:1.15; letter-spacing:-.02em; }
   h3  { font-size:11px; font-weight:700; color:var(--accent2); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
-  h4  { font-size:15px; font-weight:600; margin-bottom:6px; }
-  p, li { font-size:14px; line-height:1.65; color:var(--text); }
+  h4  { font-size:14px; font-weight:600; margin-bottom:5px; }
+  p, li { font-size:13.5px; line-height:1.65; color:var(--text); }
   .muted { color:var(--muted); font-size:12px; }
   strong { color:#fff; font-weight:600; }
   em { color:var(--accent2); font-style:italic; }
-  code { font-family:'JetBrains Mono',monospace; font-size:11.5px; background:var(--surface); padding:1px 5px; border-radius:4px; border:1px solid var(--border); color:#a5d6ff; }
+  code { font-family:'JetBrains Mono',monospace; font-size:11px; background:var(--surface); padding:1px 5px; border-radius:4px; border:1px solid var(--border); color:#a5d6ff; }
 
-  table { width:100%; border-collapse:collapse; font-size:13px; }
-  th { background:var(--surface); color:var(--muted); font-weight:600; font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); }
-  td { padding:8px 12px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th { background:var(--surface); color:var(--muted); font-weight:600; font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:7px 11px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:7px 11px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
   tr:last-child td { border-bottom:none; }
   tr:hover td { background:rgba(255,255,255,.02); }
   .hl td { background:rgba(59,130,246,.07); } .hl td:first-child { border-left:3px solid var(--accent); }
 
-  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:13px 17px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.65; overflow-x:auto; color:#c9d1d9; flex-shrink:0; }
-  .cm{color:#6e7681} .st{color:#a5d6ff} .fn{color:#d2a8ff} .nu{color:#79c0ff} .kw{color:#ff7b72} .ot{color:#3fb950}
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:11px 15px; font-family:'JetBrains Mono',monospace; font-size:11.5px; line-height:1.6; overflow-x:auto; color:#c9d1d9; flex-shrink:0; }
+  .cm{color:#6e7681} .st{color:#a5d6ff} .fn{color:#d2a8ff} .nu{color:#79c0ff} .kw{color:#ff7b72} .ot{color:#3fb950} .math{color:#f0883e; font-style:italic;}
 
-  .callout      { border-left:3px solid var(--accent);  background:rgba(59,130,246,.07);  border-radius:0 6px 6px 0; padding:10px 15px; font-size:13.5px; font-style:italic; color:#c9d1d9; line-height:1.6; }
+  .callout      { border-left:3px solid var(--accent);  background:rgba(59,130,246,.07);  border-radius:0 6px 6px 0; padding:9px 14px; font-size:13px; font-style:italic; color:#c9d1d9; line-height:1.6; }
   .callout-warn { border-left-color:var(--accent2); background:rgba(245,158,11,.07); }
   .callout-red  { border-left-color:var(--red);     background:rgba(248,81,73,.07);  font-style:normal; }
   .callout-green{ border-left-color:var(--green);   background:rgba(63,185,80,.07);  font-style:normal; }
 
-  .stat-row  { display:flex; gap:12px; }
-  .stat-card { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 18px; }
+  .stat-row  { display:flex; gap:10px; }
+  .stat-card { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 16px; }
   .stat-label{ font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
-  .stat-value{ font-size:24px; font-weight:700; letter-spacing:-.02em; }
+  .stat-value{ font-size:22px; font-weight:700; letter-spacing:-.02em; }
   .stat-note { font-size:11px; color:var(--muted); margin-top:3px; line-height:1.4; }
   .card-success{ border-color:rgba(63,185,80,.4);  background:rgba(63,185,80,.06); }
   .card-danger { border-color:rgba(248,81,73,.4);  background:rgba(248,81,73,.06); }
   .card-warn   { border-color:rgba(245,158,11,.4); background:rgba(245,158,11,.06); }
   .card-accent { border-color:rgba(59,130,246,.4); background:rgba(59,130,246,.06); }
-  .card-purple { border-color:rgba(210,168,255,.4); background:rgba(210,168,255,.06); }
 
-  .finding { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .finding { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 16px; }
   .finding-num { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:3px; }
 
-  .concept-row { display:flex; gap:12px; }
-  .concept-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .concept-row { display:flex; gap:10px; }
+  .concept-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 15px; }
   .concept-box .c-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:5px; }
   .concept-box.vit .c-label  { color:#79c0ff; }
   .concept-box.tile .c-label { color:#d2a8ff; }
-  .concept-box p, .concept-box li { font-size:13px; line-height:1.55; }
-  .concept-box ul { gap:5px; }
+  .concept-box p, .concept-box li { font-size:12.5px; line-height:1.55; }
 
-  .diff-row { display:flex; gap:12px; }
-  .diff-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 17px; }
+  .diff-row { display:flex; gap:10px; }
+  .diff-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 15px; }
   .diff-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:7px; }
   .diff-box.before .diff-label { color:var(--red); }   .diff-box.before { border-color:rgba(248,81,73,.35); }
   .diff-box.after  .diff-label { color:var(--green); } .diff-box.after  { border-color:rgba(63,185,80,.35); }
 
-  .two-col { display:flex; gap:14px; }
+  .two-col { display:flex; gap:12px; }
   .two-col > * { flex:1; }
 
   ul { padding-left:17px; display:flex; flex-direction:column; gap:4px; }
   ul li::marker { color:var(--accent); }
   .fail { color:var(--red); font-weight:600; }
 
+  /* math formula display */
+  .math-block { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 20px; font-family:'JetBrains Mono',monospace; font-size:13px; color:#f0883e; line-height:2; }
+  .math-label { font-size:10px; color:var(--muted); font-family:'Inter',sans-serif; font-weight:600; letter-spacing:.08em; text-transform:uppercase; margin-bottom:6px; }
+  .math-note  { font-size:11.5px; color:var(--muted); font-family:'Inter',sans-serif; margin-top:5px; }
+
+  /* step flow */
+  .step-row { display:flex; gap:8px; align-items:flex-start; }
+  .step-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:11px 13px; text-align:center; }
+  .step-num { font-size:20px; font-weight:700; color:var(--accent); }
+  .step-box p { font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.4; }
+  .step-box strong { color:var(--text); font-size:12.5px; }
+  .step-arrow { display:flex; align-items:center; font-size:16px; color:var(--muted); padding-top:6px; }
+
+  /* why items */
+  .why-row { display:flex; gap:10px; }
+  .why-item { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 15px; }
+  .why-num  { font-size:24px; font-weight:700; color:var(--accent); margin-bottom:4px; }
+  .why-item p { font-size:12.5px; line-height:1.55; }
+
+  /* title */
   .slide-title { justify-content:center; }
-  .slide-title .slide-body { justify-content:center; gap:22px; }
+  .slide-title .slide-body { justify-content:center; gap:20px; }
   .eyebrow { font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
-  .title-sub { font-size:16px; color:var(--muted); line-height:1.55; max-width:640px; }
+  .title-sub { font-size:15px; color:var(--muted); line-height:1.55; max-width:640px; }
   .presenter-row { display:flex; gap:26px; margin-top:6px; }
   .presenter-item { font-size:13px; color:var(--muted); }
   .presenter-item strong { color:var(--text); }
 
-  .step-row { display:flex; gap:10px; }
-  .step-box { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; text-align:center; }
-  .step-num { font-size:22px; font-weight:700; color:var(--accent); }
-  .step-box p { font-size:12px; color:var(--muted); margin-top:4px; line-height:1.45; }
-  .step-box strong { color:var(--text); font-size:13px; }
-  .step-arrow { display:flex; align-items:center; font-size:18px; color:var(--muted); padding-top:4px; }
-
-  .nav { position:fixed; bottom:22px; right:32px; display:flex; align-items:center; gap:10px; z-index:100; }
+  .nav { position:fixed; bottom:20px; right:28px; display:flex; align-items:center; gap:10px; z-index:100; }
   .nav-btn { background:var(--surface); border:1px solid var(--border); color:var(--text); width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; transition:background .15s,border-color .15s; }
   .nav-btn:hover { background:var(--border); border-color:var(--accent); }
   .nav-btn:disabled { opacity:.3; cursor:default; }
@@ -133,221 +144,296 @@
   </div>
 </div>
 
-<!-- ═══ 2. THE GAP ═══ -->
+<!-- ═══ 2. MY QUESTION + WHY ═══ -->
 <div class="slide" data-slide="1">
   <div class="slide-header">
-    <span class="slide-label">Slide 1 of 7 — The Gap</span>
+    <span class="slide-label">Slide 1 of 7 — My Question &amp; Why I Raised It</span>
     <span class="slide-meta">Week 3 Document Intelligence Refinery · Strategy C fallback</span>
   </div>
   <div class="slide-body">
     <div>
-      <h3>The Artifact</h3>
-      <p style="margin-top:6px;">Week 3 Document Intelligence Refinery — a three-layer extraction pipeline: FastText → Layout Analysis → Vision (Strategy C). When the first two layers fail on complex tables or scanned forms, the pipeline escalates the full page image to a VLM with <code>detail: high</code>.</p>
-    </div>
-    <div>
-      <h3>The Language I Used Without Understanding</h3>
-      <div class="callout callout-red" style="margin-top:7px; font-style:normal;">
-        "escalates to vision model for complex layout"
+      <h3>The Question I Submitted</h3>
+      <div class="callout" style="margin-top:7px; font-size:13px; font-style:normal; line-height:1.75;">
+        In my Week 3 Document Intelligence Refinery, I implemented the required 'Strategy C (Vision-Augmented)' fallback layer. When my FastText or Layout heuristics fail on complex tables or scanned forms, my pipeline escalates the entire document image directly to GPT-4o-mini using the <code>detail: high</code> parameter. Right now, my routing logic treats the Vision-Language Model as a magic black box that just 'looks' at the whole page, but I don't actually understand the mathematical or architectural mechanics of how it processes that image.
       </div>
-      <p style="margin-top:8px; font-size:13px; color:var(--muted);">I wrote this in my pipeline comments as if I understood what the vision model did with the image. I did not.</p>
     </div>
     <div>
-      <h3>Three Things I Could Not Do</h3>
-      <div class="stat-row" style="margin-top:7px;">
-        <div class="stat-card card-danger">
-          <div class="stat-label">Predict failure</div>
-          <div class="stat-value" style="font-size:16px;">❌</div>
-          <div class="stat-note">Strategy C succeeds on some tables, fails on others — no pattern I could name</div>
+      <h3>Why I Raised This — 3 Reasons</h3>
+      <div class="why-row" style="margin-top:7px;">
+        <div class="why-item">
+          <div class="why-num">1</div>
+          <p><strong>Language I used without understanding.</strong> "Escalates to vision model for complex layout" — I wrote this in my pipeline code</p>
         </div>
-        <div class="stat-card card-danger">
-          <div class="stat-label">Estimate cost</div>
-          <div class="stat-value" style="font-size:16px;">❌</div>
-          <div class="stat-note">No number for token cost per page — could not set a principled budget cap</div>
+        <div class="why-item">
+          <div class="why-num">2</div>
+          <p><strong>Failures I could not explain.</strong> Strategy C succeeds on some complex tables and fails on others with no pattern. I had no way to predict or prevent the failures.</p>
         </div>
-        <div class="stat-card card-danger">
-          <div class="stat-label">Design the escalation</div>
-          <div class="stat-value" style="font-size:16px;">❌</div>
-          <div class="stat-note">Routing had no principle behind it — "try it and see" was the actual logic</div>
+        <div class="why-item">
+          <div class="why-num">3</div>
+          <p><strong>Every document-heavy FDE engagement has this.</strong> Any pipeline that escalates to a vision model needs to know what the model receives. The gap is generalizable.</p>
         </div>
       </div>
     </div>
-    <div class="callout callout-warn">
-      <strong>The gap:</strong> I had never asked what <code>detail: high</code> actually does to the image, how many tokens it costs, or what architectural property determines whether the VLM can extract a table.
-    </div>
+    <!-- <div class="callout callout-warn">
+      <strong>What would change if the gap closed:</strong> I could predict failure from table width, calculate token cost per page, and design the escalation trigger on document properties — not "did the upstream layer fail?"
+    </div> -->
   </div>
 </div>
 
-<!-- ═══ 3. MECHANISM 1 — ViT ═══ -->
+<!-- ═══ 3. THE GAP ═══ -->
 <div class="slide" data-slide="2">
   <div class="slide-header">
-    <span class="slide-label">Slide 2 of 7 — Mechanism 1: How the VLM Sees an Image</span>
+    <span class="slide-label">Slide 2 of 7 — Three Things I Could Not Do</span>
+    <span class="slide-meta">Week 3 Document Intelligence Refinery · Strategy C routing logic</span>
+  </div>
+  <div class="slide-body">
+    <div class="callout callout-red" style="font-size:13.5px; font-style:normal;">
+      <strong>The claim I wrote without verifying:</strong> &nbsp;"escalates to vision model for complex layout"
+    </div>
+    <div class="stat-row">
+      <div class="stat-card card-danger">
+        <div class="stat-label">Predict failure</div>
+        <div class="stat-value" style="font-size:16px;">❌</div>
+        <div class="stat-note">Strategy C succeeds on some tables, fails on others — no pattern I could name before understanding the tiling mechanism</div>
+      </div>
+      <div class="stat-card card-danger">
+        <div class="stat-label">Estimate cost</div>
+        <div class="stat-value" style="font-size:16px;">❌</div>
+        <div class="stat-note">No number for token cost per escalated page — could not set a budget cap or compare <code>detail: low</code> vs <code>detail: high</code></div>
+      </div>
+      <div class="stat-card card-danger">
+        <div class="stat-label">Design the escalation</div>
+        <div class="stat-value" style="font-size:16px;">❌</div>
+        <div class="stat-note">Routing had no principle: "did upstream layers fail?" — not "will the VLM succeed on this document?"</div>
+      </div>
+    </div>
+    <div>
+      <h3>The Pipeline Before This Gap Was Closed</h3>
+      <table style="margin-top:7px;">
+        <thead><tr><th>Layer</th><th>Method</th><th>Escalation condition</th></tr></thead>
+        <tbody>
+          <tr><td>Strategy A</td><td>FastText extraction</td><td>Confidence &lt; 0.85 → escalate</td></tr>
+          <tr><td>Strategy B</td><td>Layout heuristics</td><td>Confidence &lt; 0.90 → escalate</td></tr>
+          <tr class="hl"><td><strong>Strategy C</strong></td><td><strong>VLM with <code>detail: high</code></strong></td><td><strong>Black box</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <div class="callout callout-warn">
+      Strategy C had lower confidence threshold (0.70) than the layers above it — but I had no mechanism to explain why, or to know when 0.70 was the wrong bar.
+    </div> -->
+  </div>
+</div>
+
+<!-- ═══ 4. VLM ARCHITECTURE (merged) ═══ -->
+<div class="slide" data-slide="3">
+  <div class="slide-header">
+    <span class="slide-label">Slide 3 of 7 — How a VLM Processes an Image: Architecture</span>
     <span class="slide-meta">Source: Dosovitskiy et al., An Image is Worth 16×16 Words — ICLR 2021</span>
   </div>
   <div class="slide-body">
     <div>
-      <h3>Vision Transformer (ViT) — The Foundation</h3>
-      <div class="step-row" style="margin-top:9px; align-items:flex-start;">
-        <div class="step-box">
-          <div class="step-num">1</div>
-          <strong>Patch Division</strong>
-          <p>Image split into non-overlapping square patches (e.g. 16×16 px each)</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step-box">
-          <div class="step-num">2</div>
-          <strong>Flatten + Project</strong>
-          <p>Each patch flattened and projected into the model's embedding dimension</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step-box">
-          <div class="step-num">3</div>
-          <strong>Positional Encoding</strong>
-          <p>Learnable positional embeddings added to preserve spatial order within the patch grid</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step-box">
-          <div class="step-num">4</div>
-          <strong>Unified Sequence</strong>
-          <p>Patch embeddings + text token embeddings → one sequence, one attention mechanism</p>
-        </div>
-      </div>
-    </div>
-    <div class="callout" style="margin-top:4px;">
-      <strong>Key insight:</strong> Image patches and text words are the same type of object — vectors in the same embedding space. When the prompt says "extract the revenue column," the word tokens for "revenue" attend directly to the patch embeddings covering that region. There is no separate vision pathway.
-    </div>
-    <div class="concept-row">
-      <div class="concept-box vit">
-        <div class="c-label">Within a tile — spatial layout preserved</div>
-        <p>Positional encodings are learned across the patch grid. The model knows patch (3,2) is to the right of patch (3,1).</p>
-      </div>
-      <div class="concept-box tile" style="border-color:rgba(248,81,73,.35);">
-        <div class="c-label" style="color:var(--red);">Across tiles — NO shared encoding</div>
-        <p>Tiles are independent crops. A patch at position (0,0) of tile 2 has no positional relationship to any patch in tile 1.</p>
-      </div>
-    </div>
-  </div>
-</div>
+      <h3>Vision Transformer (ViT) — From Image to Token Sequence</h3>
+      <svg viewBox="0 0 760 138" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin-top:7px;">
+        <defs>
+          <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <polygon points="0 0, 7 3.5, 0 7" fill="#8b949e"/>
+          </marker>
+        </defs>
 
-<!-- ═══ 4. MECHANISM 2 — TILING ═══ -->
-<div class="slide" data-slide="3">
-  <div class="slide-header">
-    <span class="slide-label">Slide 3 of 7 — Mechanism 2: What detail: high Actually Does</span>
-    <span class="slide-meta">Source: OpenAI Vision Documentation, 2024</span>
-  </div>
-  <div class="slide-body">
+        <!-- ── STAGE 1: DOCUMENT ── -->
+        <text x="40" y="11" text-anchor="middle" font-size="9" fill="#6e7681" font-family="Inter,sans-serif" font-weight="600" letter-spacing=".08em">IMAGE</text>
+        <rect x="10" y="16" width="60" height="82" rx="3" fill="#0d1117" stroke="#30363d" stroke-width="1.5"/>
+        <rect x="14" y="20" width="52" height="7" rx="1" fill="#21262d"/>
+        <line x1="40" y1="27" x2="40" y2="98" stroke="#21262d" stroke-width=".8"/>
+        <line x1="10" y1="40" x2="70" y2="40" stroke="#21262d" stroke-width=".8"/>
+        <line x1="10" y1="53" x2="70" y2="53" stroke="#21262d" stroke-width=".8"/>
+        <line x1="10" y1="66" x2="70" y2="66" stroke="#21262d" stroke-width=".8"/>
+        <line x1="10" y1="79" x2="70" y2="79" stroke="#21262d" stroke-width=".8"/>
+        <rect x="14" y="43" width="20" height="3" rx="1" fill="#30363d"/>
+        <rect x="44" y="43" width="20" height="3" rx="1" fill="#30363d"/>
+        <rect x="14" y="56" width="18" height="3" rx="1" fill="#30363d"/>
+        <rect x="44" y="56" width="20" height="3" rx="1" fill="#30363d"/>
+        <rect x="14" y="69" width="20" height="3" rx="1" fill="#30363d"/>
+        <rect x="44" y="69" width="18" height="3" rx="1" fill="#30363d"/>
+        <rect x="14" y="82" width="18" height="3" rx="1" fill="#30363d"/>
+        <rect x="44" y="82" width="20" height="3" rx="1" fill="#30363d"/>
+
+        <!-- arrow 1 -->
+        <line x1="76" y1="57" x2="92" y2="57" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="84" y="50" text-anchor="middle" font-size="8" fill="#6e7681" font-family="Inter,sans-serif">step 1</text>
+
+        <!-- ── STAGE 2: PATCHES ── -->
+        <text x="128" y="11" text-anchor="middle" font-size="9" fill="#6e7681" font-family="Inter,sans-serif" font-weight="600" letter-spacing=".08em">PATCH DIVISION</text>
+        <rect x="98"  y="16" width="30" height="27" fill="rgba(59,130,246,.28)"   stroke="#3b82f6" stroke-width="1.2"/>
+        <text x="113" y="33" text-anchor="middle" font-size="9" fill="#79c0ff"  font-family="JetBrains Mono,monospace" font-weight="700">P1</text>
+        <rect x="128" y="16" width="30" height="27" fill="rgba(210,168,255,.28)" stroke="#d2a8ff" stroke-width="1.2"/>
+        <text x="143" y="33" text-anchor="middle" font-size="9" fill="#d2a8ff"  font-family="JetBrains Mono,monospace" font-weight="700">P2</text>
+        <rect x="98"  y="43" width="30" height="27" fill="rgba(245,158,11,.28)"  stroke="#f59e0b" stroke-width="1.2"/>
+        <text x="113" y="60" text-anchor="middle" font-size="9" fill="#f59e0b"  font-family="JetBrains Mono,monospace" font-weight="700">P3</text>
+        <rect x="128" y="43" width="30" height="27" fill="rgba(63,185,80,.28)"   stroke="#3fb950" stroke-width="1.2"/>
+        <text x="143" y="60" text-anchor="middle" font-size="9" fill="#3fb950"  font-family="JetBrains Mono,monospace" font-weight="700">P4</text>
+        <rect x="98"  y="70" width="30" height="28" fill="rgba(121,192,255,.28)" stroke="#79c0ff" stroke-width="1.2"/>
+        <text x="113" y="88" text-anchor="middle" font-size="9" fill="#79c0ff"  font-family="JetBrains Mono,monospace" font-weight="700">P5</text>
+        <rect x="128" y="70" width="30" height="28" fill="rgba(248,81,73,.28)"   stroke="#f85149" stroke-width="1.2"/>
+        <text x="143" y="88" text-anchor="middle" font-size="9" fill="#f85149"  font-family="JetBrains Mono,monospace" font-weight="700">P6</text>
+
+        <!-- arrow 2 -->
+        <line x1="164" y1="57" x2="180" y2="57" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="172" y="50" text-anchor="middle" font-size="8" fill="#6e7681" font-family="Inter,sans-serif">step 2</text>
+
+        <!-- ── STAGE 3: EMBED VECTORS ── -->
+        <text x="228" y="11" text-anchor="middle" font-size="9" fill="#6e7681" font-family="Inter,sans-serif" font-weight="600" letter-spacing=".08em">EMBED VECTORS</text>
+        <rect x="185" y="22" width="13" height="68" rx="2" fill="#3b82f6"  opacity=".8"/>
+        <text x="191" y="102" text-anchor="middle" font-size="7.5" fill="#3b82f6"  font-family="JetBrains Mono,monospace">v1</text>
+        <rect x="202" y="28" width="13" height="62" rx="2" fill="#d2a8ff" opacity=".8"/>
+        <text x="208" y="102" text-anchor="middle" font-size="7.5" fill="#d2a8ff" font-family="JetBrains Mono,monospace">v2</text>
+        <rect x="219" y="18" width="13" height="72" rx="2" fill="#f59e0b" opacity=".8"/>
+        <text x="225" y="102" text-anchor="middle" font-size="7.5" fill="#f59e0b" font-family="JetBrains Mono,monospace">v3</text>
+        <rect x="236" y="25" width="13" height="65" rx="2" fill="#3fb950" opacity=".8"/>
+        <text x="242" y="102" text-anchor="middle" font-size="7.5" fill="#3fb950" font-family="JetBrains Mono,monospace">v4</text>
+        <rect x="253" y="32" width="13" height="58" rx="2" fill="#79c0ff" opacity=".8"/>
+        <text x="259" y="102" text-anchor="middle" font-size="7.5" fill="#79c0ff" font-family="JetBrains Mono,monospace">v5</text>
+        <rect x="270" y="20" width="13" height="70" rx="2" fill="#f85149" opacity=".8"/>
+        <text x="276" y="102" text-anchor="middle" font-size="7.5" fill="#f85149" font-family="JetBrains Mono,monospace">v6</text>
+        <text x="230" y="118" text-anchor="middle" font-size="8" fill="#6e7681" font-family="Inter,sans-serif" font-style="italic">D-dim each</text>
+
+        <!-- arrow 3 + pos enc -->
+        <line x1="290" y1="57" x2="310" y2="57" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="300" y="49" text-anchor="middle" font-size="8" fill="#6e7681" font-family="Inter,sans-serif">⊕ pos</text>
+        <text x="300" y="67" text-anchor="middle" font-size="8" fill="#6e7681" font-family="Inter,sans-serif">step 3</text>
+
+        <!-- ── STAGE 4: UNIFIED SEQUENCE ── -->
+        <text x="503" y="11" text-anchor="middle" font-size="9" fill="#6e7681" font-family="Inter,sans-serif" font-weight="600" letter-spacing=".08em">UNIFIED SEQUENCE → ONE TRANSFORMER</text>
+        <!-- patch embeddings (v1-v6: already embedded vectors from step 2, not raw patches) -->
+        <rect x="318" y="44" width="22" height="22" rx="3" fill="rgba(59,130,246,.8)"   stroke="#3b82f6" stroke-width="1"/>
+        <text x="329" y="59" text-anchor="middle" font-size="8" fill="#fff" font-family="JetBrains Mono,monospace">v1</text>
+        <rect x="344" y="44" width="22" height="22" rx="3" fill="rgba(210,168,255,.8)" stroke="#d2a8ff" stroke-width="1"/>
+        <text x="355" y="59" text-anchor="middle" font-size="8" fill="#fff" font-family="JetBrains Mono,monospace">v2</text>
+        <rect x="370" y="44" width="22" height="22" rx="3" fill="rgba(245,158,11,.8)"  stroke="#f59e0b" stroke-width="1"/>
+        <text x="381" y="59" text-anchor="middle" font-size="8" fill="#fff" font-family="JetBrains Mono,monospace">v3</text>
+        <rect x="396" y="44" width="22" height="22" rx="3" fill="rgba(63,185,80,.8)"   stroke="#3fb950" stroke-width="1"/>
+        <text x="407" y="59" text-anchor="middle" font-size="8" fill="#fff" font-family="JetBrains Mono,monospace">v4</text>
+        <rect x="422" y="44" width="22" height="22" rx="3" fill="rgba(121,192,255,.8)" stroke="#79c0ff" stroke-width="1"/>
+        <text x="433" y="59" text-anchor="middle" font-size="8" fill="#fff" font-family="JetBrains Mono,monospace">v5</text>
+        <rect x="448" y="44" width="22" height="22" rx="3" fill="rgba(248,81,73,.8)"   stroke="#f85149" stroke-width="1"/>
+        <text x="459" y="59" text-anchor="middle" font-size="8" fill="#fff" font-family="JetBrains Mono,monospace">v6</text>
+        <!-- divider -->
+        <line x1="477" y1="42" x2="477" y2="69" stroke="#30363d" stroke-width="1.5" stroke-dasharray="2,2"/>
+        <!-- text/word tokens -->
+        <rect x="483" y="44" width="22" height="22" rx="3" fill="#c9d1d9" opacity=".9"/>
+        <text x="494" y="59" text-anchor="middle" font-size="7.5" fill="#0d1117" font-family="JetBrains Mono,monospace">ext</text>
+        <rect x="509" y="44" width="22" height="22" rx="3" fill="#c9d1d9" opacity=".9"/>
+        <text x="520" y="59" text-anchor="middle" font-size="7.5" fill="#0d1117" font-family="JetBrains Mono,monospace">rev</text>
+        <rect x="535" y="44" width="22" height="22" rx="3" fill="#c9d1d9" opacity=".9"/>
+        <text x="546" y="59" text-anchor="middle" font-size="7.5" fill="#0d1117" font-family="JetBrains Mono,monospace">en</text>
+        <rect x="561" y="44" width="22" height="22" rx="3" fill="#c9d1d9" opacity=".9"/>
+        <text x="572" y="59" text-anchor="middle" font-size="7.5" fill="#0d1117" font-family="JetBrains Mono,monospace">ue</text>
+        <rect x="587" y="44" width="22" height="22" rx="3" fill="#c9d1d9" opacity=".9"/>
+        <text x="598" y="59" text-anchor="middle" font-size="7.5" fill="#0d1117" font-family="JetBrains Mono,monospace">col</text>
+        <!-- brackets -->
+        <path d="M318,74 L318,78 L470,78 L470,74" fill="none" stroke="#3b82f6" stroke-width=".8" opacity=".6"/>
+        <text x="394" y="90" text-anchor="middle" font-size="8" fill="#3b82f6" font-family="Inter,sans-serif" opacity=".8">patch embeddings</text>
+        <path d="M483,74 L483,78 L609,78 L609,74" fill="none" stroke="#8b949e" stroke-width=".8" opacity=".6"/>
+        <text x="546" y="90" text-anchor="middle" font-size="8" fill="#8b949e" font-family="Inter,sans-serif" opacity=".8">text tokens (prompt)</text>
+        <!-- step 4 note -->
+        <text x="463" y="30" text-anchor="middle" font-size="8" fill="#6e7681" font-family="Inter,sans-serif">step 4 — concat + attend</text>
+        <!-- LLM arrow -->
+        <line x1="618" y1="55" x2="638" y2="55" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr)"/>
+        <!-- LLM box -->
+        <rect x="643" y="42" width="60" height="26" rx="4" fill="rgba(59,130,246,.12)" stroke="#3b82f6" stroke-width="1.2"/>
+        <text x="673" y="53" text-anchor="middle" font-size="9"  fill="#79c0ff" font-family="Inter,sans-serif" font-weight="700">LLM</text>
+        <text x="673" y="64" text-anchor="middle" font-size="7.5" fill="#8b949e" font-family="Inter,sans-serif">attends all</text>
+
+        <!-- bottom note -->
+        <!-- <text x="380" y="110" text-anchor="middle" font-size="8" fill="#6e7681" font-family="Inter,sans-serif" font-style="italic">image patches and text tokens are identical vector objects — the transformer cannot tell them apart</text> -->
+      </svg>
+    </div>
     <div>
-      <h3>The 4-Step Tiling Algorithm</h3>
-      <table style="margin-top:7px;">
-        <thead><tr><th>Step</th><th>Action</th><th>Result</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>Resize to fit within <strong>2048 × 2048 px</strong></td><td>Preserves aspect ratio</td></tr>
-          <tr><td>2</td><td>Scale so <strong>shortest side = 768 px</strong></td><td>Standardises resolution</td></tr>
-          <tr><td>3</td><td>Tile image in <strong>512 × 512 windows</strong></td><td>Each tile is independent</td></tr>
-          <tr class="hl"><td>4</td><td>Token cost: <strong>85 + (170 × tiles)</strong></td><td>Base overview + per-tile cost</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <h3>Concrete Calculation — Scanned A4 at 150 DPI</h3>
-      <pre><span class="kw">import</span> math
-
-<span class="kw">def</span> <span class="fn">vision_tokens_high</span>(w, h):
-    <span class="kw">if</span> max(w,h) > <span class="nu">2048</span>: s = <span class="nu">2048</span>/max(w,h); w,h = int(w*s), int(h*s)
-    <span class="kw">if</span> min(w,h) > <span class="nu">768</span>:  s = <span class="nu">768</span>/min(w,h);  w,h = int(w*s), int(h*s)
-    tiles = math.ceil(w/<span class="nu">512</span>) * math.ceil(h/<span class="nu">512</span>)
-    <span class="kw">return</span> {<span class="st">"dims"</span>:(w,h), <span class="st">"tiles"</span>:tiles, <span class="st">"tokens"</span>:<span class="nu">85</span>+<span class="nu">170</span>*tiles}
-
-<span class="fn">print</span>(vision_tokens_high(<span class="nu">1240</span>, <span class="nu">1754</span>))  <span class="cm"># A4 @ 150 DPI</span>
-<span class="cm"># → {'dims': (768, 1086), 'tiles': 6, 'tokens': 1105}</span>
-<span class="cm"># Cost: 1105 × $0.000000150 = $0.000166 per page</span></pre>
-    </div>
-    <div class="stat-row">
-      <div class="stat-card card-accent">
-        <div class="stat-label">Tokens per A4 page</div>
-        <div class="stat-value">1,105</div>
-        <div class="stat-note">6 tiles × 170 + 85 base</div>
-      </div>
-      <div class="stat-card card-success">
-        <div class="stat-label">Cost per page</div>
-        <div class="stat-value">$0.000166</div>
-        <div class="stat-note">600 pages fits in $0.10</div>
-      </div>
-      <div class="stat-card card-warn">
-        <div class="stat-label">Real constraint</div>
-        <div class="stat-value" style="font-size:17px;">Latency</div>
-        <div class="stat-note">~1–3s per page — not token cost</div>
+      <h3 style="margin-bottom:7px;">Three Components Working in Sequence</h3>
+      <div class="concept-row">
+        <div class="concept-box vit">
+          <div class="c-label">Vision Encoder</div>
+          <p style="margin-top:4px; font-size:12px; line-height:1.55;">Translates raw image patches into vectors — the same number-language the LLM already understands from text.</p>
+        </div>
+        <div class="concept-box" style="border-color:rgba(245,158,11,.35);">
+          <div class="c-label" style="color:var(--accent2);">Projection Layer</div>
+          <p style="margin-top:4px; font-size:12px; line-height:1.55;">Thin trainable bridge that rescales vision encoder output to exactly match the LLM's embedding dimension.</p>
+        </div>
+        <div class="concept-box" style="border-color:rgba(63,185,80,.35);">
+          <div class="c-label" style="color:var(--green);">Language Model (LLM)</div>
+          <p style="margin-top:4px; font-size:12px; line-height:1.55;">Receives prompt text + all patch vectors in one combined list. Attends across all tokens equally — no special treatment for image vs text.</p>
+        </div>
       </div>
     </div>
+    <!-- <div class="callout">
+      <strong>The critical insight:</strong> "revenue" in your prompt and the patches covering the revenue column are all in the same list. The model connects them directly — but only if they are in the same tile. Patches from <em>different tiles</em> are placed far apart in the list, breaking that connection. This is what causes wide-table failures.
+    </div> -->
   </div>
 </div>
 
 <!-- ═══ 5. WHY TABLES FAIL ═══ -->
-<div class="slide" data-slide="4">
+<div class="slide" data-slide="5">
   <div class="slide-header">
-    <span class="slide-label">Slide 4 of 7 — Why Wide Tables Fail</span>
-    <span class="slide-meta">The failure mode I could not predict — now I can</span>
+    <span class="slide-label">Slide 4 of 7 — Why Wide Tables Fail — Now I Can Predict It</span>
+    <span class="slide-meta">Tile boundary = row continuity break</span>
   </div>
   <div class="slide-body">
-    <div>
-      <h3>Tile Boundary = Row Continuity Break</h3>
-      <div class="callout callout-red" style="margin-top:7px; font-style:normal; font-size:13.5px;">
-        Each 512 × 512 tile at 150 DPI covers <strong>~3.4 × 3.4 inches</strong> of the original page.<br>
-        An A4-wide table (8.27 inches) spans <strong>2–3 tiles</strong>.<br>
-        Tiles are independent crops — <strong>no shared positional encoding across tile boundaries</strong>.<br>
-        A table row that straddles a boundary appears as two disconnected groups of patches.<br>
-        The model cannot reconstruct row continuity without a structural signal that does not exist.
-      </div>
+    <div class="callout callout-red" style="font-style:normal; font-size:13.5px;">
+      Each 512 × 512 tile covers <strong>~3.4 × 3.4 inches</strong> of the page.
+      An A4-wide table (8.27 inches) spans <strong>2–3 tiles</strong>.
+      Tiles are independent crops — <strong>no shared positional encoding across tile boundaries</strong>.
+      A row that straddles a boundary appears as two disconnected groups of patches in the attention sequence.
     </div>
     <div class="two-col">
       <div>
         <h3 style="margin-bottom:8px;">Tables that succeed</h3>
         <table>
-          <thead><tr><th>Property</th><th>Why it works</th></tr></thead>
+          <thead><tr><th>Property</th><th>Why</th></tr></thead>
           <tbody>
-            <tr><td>Width &lt; 3.4 inches</td><td>Fits within one tile — full spatial layout preserved</td></tr>
-            <tr><td>Dense, single-column</td><td>Cells stay within tile boundaries</td></tr>
-            <tr><td>Center of page</td><td>Not split by edge tiling</td></tr>
+            <tr><td>Width &lt; 3.4 inches</td><td>Full table fits in one tile — spatial layout intact</td></tr>
+            <tr><td>Dense, single-column</td><td>Cells don't cross tile boundaries</td></tr>
+            <tr><td>Page centre</td><td>Not split by edge tile boundaries</td></tr>
           </tbody>
         </table>
       </div>
       <div>
         <h3 style="margin-bottom:8px;">Tables that fail</h3>
         <table>
-          <thead><tr><th>Property</th><th>Why it breaks</th></tr></thead>
+          <thead><tr><th>Property</th><th>Why</th></tr></thead>
           <tbody>
-            <tr><td class="fail">Width &gt; 3.4 inches</td><td>Row straddles tile boundary — continuity lost</td></tr>
-            <tr><td class="fail">Near page edge</td><td>Content cut by margin tile — partial rows</td></tr>
-            <tr><td class="fail">Multi-column wide</td><td>Columns in different tiles with no linking signal</td></tr>
+            <tr><td class="fail">Width &gt; 3.4 inches</td><td>Row straddles tile — row continuity lost</td></tr>
+            <tr><td class="fail">Near page edge</td><td>Content split by margin tile — partial rows</td></tr>
+            <tr><td class="fail">Multi-column wide</td><td>Columns in different tiles, no linking signal</td></tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="callout callout-green" style="margin-top:4px;">
-      <strong>Now I can predict failure:</strong> if a table's width exceeds one tile width (~3.4 inches at 150 DPI), Strategy C will likely hallucinate or miss rows. This is checkable before the API call.
-    </div>
+    <!-- <div class="callout callout-green">
+      <strong>I can now predict before the API call:</strong> if a table's width exceeds ~3.4 inches at 150 DPI, Strategy C will likely fail. This is checkable from Strategy B's layout bounding boxes — before escalating.
+    </div> -->
   </div>
 </div>
 
-<!-- ═══ 6. THE FIX ═══ -->
-<div class="slide" data-slide="5">
+<!-- ═══ 8. THE FIX ═══ -->
+<div class="slide" data-slide="7">
   <div class="slide-header">
     <span class="slide-label">Slide 5 of 7 — The Fix: SmartBBoxCropper</span>
-    <span class="slide-meta">15-line OpenCV preprocessing — committed to Document Intelligence Refinery</span>
+    <span class="slide-meta">15-line OpenCV preprocessing · committed to Document-Intelligence-Refinery</span>
   </div>
   <div class="slide-body">
     <div>
-      <h3>The Insight from the Explainer</h3>
-      <p style="margin-top:6px; font-size:13.5px;">If I crop the page to its content bounding box <em>before</em> sending to the VLM, the whitespace margins are removed, the effective image is smaller (fewer tiles), and tables are more likely to fall within a single tile instead of straddling a boundary.</p>
+      <h3>The Insight</h3>
+      <p style="margin-top:5px; font-size:13.5px;">If the page is cropped to its content bounding box <em>before</em> the VLM call, margins are removed, the image is smaller (fewer tiles), and tables are more likely to fall within a single tile. Follows directly from understanding the tile structure.</p>
     </div>
-    <pre style="margin-top:4px;"><span class="kw">import</span> cv2, numpy <span class="kw">as</span> np
+    <pre><span class="kw">import</span> cv2, numpy <span class="kw">as</span> np
 
 <span class="kw">def</span> <span class="fn">smart_bbox_crop</span>(img_bytes: bytes, padding: int = <span class="nu">20</span>) -> bytes:
     nparr  = np.frombuffer(img_bytes, np.uint8)
     img    = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     gray   = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    _, thr = cv2.threshold(gray, <span class="nu">250</span>, <span class="nu">255</span>, cv2.THRESH_BINARY_INV)
+    _, thr = cv2.threshold(gray, <span class="nu">250</span>, <span class="nu">255</span>, cv2.THRESH_BINARY_INV)  <span class="cm"># find dark content</span>
     coords = cv2.findNonZero(thr)
-    <span class="kw">if</span> coords <span class="kw">is</span> None: <span class="kw">return</span> img_bytes           <span class="cm"># blank page</span>
+    <span class="kw">if</span> coords <span class="kw">is</span> None: <span class="kw">return</span> img_bytes                          <span class="cm"># blank page — skip</span>
     x, y, w, h = cv2.boundingRect(coords)
     ih, iw = img.shape[:<span class="nu">2</span>]
     x, y = max(<span class="nu">0</span>, x-padding), max(<span class="nu">0</span>, y-padding)
@@ -355,93 +441,93 @@
     _, buf = cv2.imencode(<span class="st">'.png'</span>, img[y:y+h, x:x+w])
     <span class="kw">return</span> buf.tobytes()
 
-<span class="cm"># One line added in _extract_gemini and _extract_ollama:</span>
-img_bytes = <span class="fn">smart_bbox_crop</span>(img_bytes)   <span class="cm"># crop before VLM call</span></pre>
+img_bytes = <span class="fn">smart_bbox_crop</span>(img_bytes)   <span class="cm"># added before every VLM call</span></pre>
     <div class="stat-row" style="margin-top:4px;">
       <div class="stat-card card-success">
         <div class="stat-label">Token reduction</div>
         <div class="stat-value">~40–50%</div>
-        <div class="stat-note">Typical A4: 15% margins each side → ~49% area reduction</div>
+        <div class="stat-note">Typical A4: 15% margins each side → ~49% area → fewer tiles</div>
       </div>
       <div class="stat-card card-success">
         <div class="stat-label">Edge table failures</div>
         <div class="stat-value">Reduced</div>
-        <div class="stat-note">Tables near page margins now centred in cropped image</div>
+        <div class="stat-note">Page-edge tables centred in cropped image, less likely to straddle tiles</div>
       </div>
-      <div class="stat-card card-accent">
-        <div class="stat-label">Lines of code</div>
-        <div class="stat-value">15</div>
-        <div class="stat-note">One function, two one-line call-sites</div>
-      </div>
+      <!-- <div class="stat-card card-accent">
+        <div class="stat-label">Size of change</div>
+        <div class="stat-value">15 lines</div>
+        <div class="stat-note">One function + two one-line call-sites</div>
+      </div> -->
     </div>
   </div>
 </div>
 
-<!-- ═══ 7. WHAT CHANGED ═══ -->
-<div class="slide" data-slide="6">
+<!-- ═══ 9. WHAT CHANGED ═══ -->
+<div class="slide" data-slide="8">
   <div class="slide-header">
     <span class="slide-label">Slide 6 of 7 — What Changed in My Existing Work</span>
-    <span class="slide-meta">Grounding commit · Document-Intelligence-Refinery · src/strategies/extractors.py</span>
+    <span class="slide-meta">Grounding commit · src/strategies/extractors.py</span>
   </div>
   <div class="slide-body">
     <div class="diff-row">
       <div class="diff-box before">
         <div class="diff-label">Before — black box, no mechanism</div>
-        <ul style="font-size:12.5px; gap:7px; margin-top:2px;">
-          <li><code>detail: "auto"</code> — non-deterministic token cost across API versions</li>
+        <ul style="font-size:12.5px; gap:6px; margin-top:2px;">
+          <li><code>detail: "auto"</code> — non-deterministic cost across API versions</li>
           <li>No token cost comment — no number for budget estimation</li>
-          <li>Full raw page sent to VLM regardless of whitespace</li>
-          <li>No explanation of why wide tables fail — labelled as "VLM limitation"</li>
-          <li>Escalation trigger: "did upstream layers fail?" — no predictive signal</li>
+          <li>Full raw page sent regardless of whitespace margins</li>
+          <li>Wide table failures labelled as "VLM limitation" — unexplained</li>
+          <li>Escalation trigger: "did upstream fail?" — no predictive signal</li>
         </ul>
       </div>
       <div class="diff-box after">
         <div class="diff-label">After — mechanism documented, fix applied</div>
-        <ul style="font-size:12.5px; gap:7px; margin-top:2px;">
-          <li><code>detail: "high"</code> explicit — reproducible cost across API versions</li>
-          <li>Token cost comment: 6 tiles × 170 + 85 = <strong>1,105 tokens = $0.000166/page</strong></li>
-          <li><code>smart_bbox_crop()</code> runs before every VLM call — ~40–50% token reduction</li>
-          <li>Tile-boundary failure documented: tables &gt;~3.4 inches wide predicted to fail</li>
-          <li>Two-pass strategy flagged as TODO: <code>detail: low</code> for classification first</li>
+        <ul style="font-size:12.5px; gap:6px; margin-top:2px;">
+          <li><code>detail: "high"</code> explicit — reproducible cost</li>
+          <li>Token cost comment: 6 tiles → <strong>1,105 tokens = $0.000166/page</strong></li>
+          <li><code>smart_bbox_crop()</code> before every VLM call — ~40–50% token reduction</li>
+          <li>Tile-boundary failure: tables &gt;~3.4 inches wide predicted to fail</li>
+          <!-- <li>Two-pass strategy flagged as TODO: <code>detail: low</code> for page classification</li> -->
         </ul>
       </div>
     </div>
-    <div class="callout callout-warn" style="margin-top:6px;">
-      <strong>The routing logic has a principle now.</strong> Before: "try it and see." After: check table width against tile coverage before escalating, and send a cropped image when you do.
-    </div>
+    <!-- <div class="callout callout-warn" style="margin-top:6px;">
+      <strong>The routing logic has a principle now.</strong> Before: "try it and see." After: check table width against tile coverage before escalating, and crop the image when you do.
+    </div> -->
   </div>
 </div>
 
-<!-- ═══ 8. SUMMARY ═══ -->
-<div class="slide" data-slide="7">
+<!-- ═══ 10. SUMMARY ═══ -->
+<div class="slide" data-slide="9">
   <div class="slide-header">
     <span class="slide-label">Slide 7 of 7 — Summary</span>
-    <span class="slide-meta">Gashaw Bekele's explainer closed the gap · Sign-off: Closed</span>
+    <span class="slide-meta">Gashaw Bekele's explainer · Sign-off: Closed</span>
   </div>
   <div class="slide-body">
     <div>
       <h3>What I Understand Now That I Did Not Before</h3>
-      <table style="margin-top:8px;">
-        <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+      <table style="margin-top:7px;">
+        <thead><tr><th>My Question</th><th>Answer</th></tr></thead>
         <tbody>
-          <tr><td>What does <code>detail: high</code> do?</td><td>4-step resize + tile into 512×512 windows → 85 + 170×tiles tokens</td></tr>
-          <tr><td>Cost per A4 page?</td><td><strong>1,105 tokens · $0.000166</strong> · latency is the real constraint</td></tr>
-          <tr><td>How does the VLM encode the image?</td><td>ViT: patches → same embedding space as text → unified attention</td></tr>
-          <tr><td>Why do wide tables fail?</td><td>Tile boundaries cut rows; no positional encoding bridges tiles</td></tr>
-          <tr class="hl"><td>How to predict failure?</td><td>Table width &gt; ~3.4 inches at 150 DPI → will straddle tile boundary</td></tr>
+          <!-- <tr><td>What does <code>detail: high</code> do?</td><td>4-step resize + tile into 512×512 windows → <strong>85 + 170×tiles tokens</strong></td></tr> -->
+          <tr><td>How does the VLM encode the image?</td><td>ViT: patches → D-dim embedding → unified attention with text tokens</td></tr>
+          <tr><td>How do image + text combine?</td><td>Vision encoder converts patches to vectors → projection layer resizes to LLM dimension → one merged list → LLM attends across all tokens equally</td></tr>
+          <tr class="hl"><td>Why do wide tables fail?</td><td>Tile boundaries cut rows; no positional encoding bridges independent tile crops</td></tr>
+          <tr><td>Cost per page?</td><td><strong>1,105 tokens · $0.000166</strong> · latency is the real constraint</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="callout" style="margin-top:8px; font-size:14.5px; line-height:1.7; font-style:normal;">
-      I wrote "escalates to vision model for complex layout" — but the model never saw the whole page. It saw six independent 512×512 tile crops with no structural signal connecting them. A 15-line OpenCV crop fixes half the failures and costs nothing.
-    </div>
+    <!-- <div class="callout" style="margin-top:8px; font-size:14px; line-height:1.75; font-style:normal;">
+      I wrote "escalates to vision model for complex layout" — but the model never saw the whole page. It saw six independent 512×512 tile crops with no structural signal connecting them. The math explains the failure, and a 15-line OpenCV crop reduces it.
+    </div> -->
     <div>
       <h3 style="margin-top:6px;">Canonical Sources</h3>
-      <p style="font-size:12.5px; color:var(--muted); margin-top:4px;">
-        Dosovitskiy et al., <em>An Image is Worth 16×16 Words</em>, ICLR 2021 ·
-        OpenAI Vision Documentation (detail parameter + token formula), 2024 ·
-        GPT-4V System Card, OpenAI, 2023
-      </p>
+      <p style="font-size:12px; color:var(--muted); margin-top:6px;">Three references that grounded the explainer:</p>
+      <ul style="margin-top:8px; font-size:12px; gap:7px;">
+        <li><strong style="color:var(--text);">Dosovitskiy et al., ICLR 2021</strong> — the original ViT paper (arXiv:2010.11929)</li>
+        <li><strong style="color:var(--text);">OpenAI Vision Documentation 2024</strong> — the detail parameter and token formula</li>
+        <li><strong style="color:var(--text);">GPT-4V System Card, OpenAI 2023</strong> — the multimodal architecture overview</li>
+      </ul>
     </div>
   </div>
 </div>
