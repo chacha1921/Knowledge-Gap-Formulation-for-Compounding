@@ -17,36 +17,14 @@ Weeks 1–11 built systems. Week 12 audits the understanding behind them. Each d
 
 ---
 
-## Repository Structure
-
-```
-pair_DAY_1/          ← Day 1 submissions (Inference-time mechanics)
-│   morning_call_summary.md
-│   my_question.md
-│   explainer_blog.md
-│   tweet_thread.md
-│   evening_call_summary.md
-│   grounding_commit.md
-│
-pair_DAY_2/          ← Day 2 submissions
-...
-pair_DAY_5/          ← Day 5 submissions
-│
-synthesis.md         ← 1,500-word week synthesis (due Saturday 21:00 UTC)
-canonical_list.md    ← Annotated reading list contributed to cohort canon
-portfolio_update.md  ← How the 5 grounding commits improve Week 10/11 work
-```
-
----
-
 ## Daily Topics
 
 | Day | Topic | My Question Subtopic |
 |-----|-------|----------------------|
 | 1 | Inference-time mechanics | KV cache mechanics; why prefix caching matters for cost; how cache invalidation actually works |
-| 2 | TBD (cohort vote) | |
-| 3 | TBD | |
-| 4 | TBD | |
+| 2 | Function-calling agents | Tool selection and routing mechanics in multi-tool agents |
+| 3 | Training and post-training mechanics | LoRA rank mechanics — why r=32 suffices for behavioral alignment and what changes at r=64 |
+| 4 | Evaluation and statistics | Self-preference bias vs cross-family rotation — whether the leakage guard also closes the stylistic scoring path |
 | 5 | TBD | |
 
 ---
@@ -57,8 +35,8 @@ portfolio_update.md  ← How the 5 grounding commits improve Week 10/11 work
 |-----|-----------|--------------|
 | 1 | [The Two Phases Inside Every LLM Call](https://medium.com/@chalielijalem/the-two-phases-inside-every-llm-call-prefill-decode-and-why-the-split-changes-everything-d35946f5aa4f) | [Tweet Thread](https://x.com/ChalieLijalem/status/2051408252194193704?s=20) |
 | 2 | [How Tool Selection Actually Works in Function-Calling Agents](https://medium.com/@chalielijalem/how-tool-selection-actually-works-in-function-calling-agents-1961c1d3d222) | [Tweet Thread](https://x.com/ChalieLijalem/status/2052091935687393364?s=20) |
-| 3 | | |
-| 4 | | |
+| 3 | [What γ Controls in SimPO and Why It Breaks on Weak Preference Pairs](https://medium.com/@chalielijalem/explainer-what-%CE%B3-controls-in-simpo-and-why-it-breaks-on-weak-preference-pairs-67b83eab169f) | [Tweet Thread](https://x.com/ChalieLijalem/status/2052382720240583059?s=20) |
+| 4 | [What p=0.372 Actually Says When Your Baseline Is 97.73%](https://medium.com/@chalielijalem/explainer-what-p-0-372-actually-says-when-your-baseline-is-97-73-58b4fcdc1668) | [Tweet Thread](https://x.com/ChalieLijalem/status/2052753337041223996?s=20) |
 | 5 | | |
 
 ---
@@ -69,18 +47,10 @@ See [portfolio_update.md](portfolio_update.md) for the full summary.
 
 | Day | File Edited | What Changed |
 |-----|-------------|--------------|
-| 1 | `week10/Technical Challenge/baseline.md` | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
+| 1 | `week10/Technical Challenge/baseline.md` | Added KV cache cost analysis and prefix caching strategy |
+| 2 | `week11/agent_config.md` | Updated tool routing logic based on function-calling selection mechanism |
+| 3 | `training/train_orpo.py` (Sales-Agent-Evaluation-Bench) | Reduced LoRA rank r=32 → r=16; justified by intrinsic dimensionality argument (Aghajanyan et al. 2021) |
+| 4 | `tenacious-bench/methodology.md` | Added self-preference bias section with pending cross-judge agreement audit; qualified Delta A in model_card.md |
 | 5 | | |
 
 ---
-
-## Week 10 Baseline Reference
-
-- **pass@1:** 0.7267 (95% CI: [0.6504, 0.7917])
-- **avg agent cost:** $0.0199
-- **p50 latency:** 105.95s
-- **p95 latency:** 551.65s
-- **domain:** retail (τ²-Bench)
